@@ -201,8 +201,13 @@ class __clidist:
 def clidist(tmpl, seed=None):
     gkw = __clidist(seed)
     template = gkw.jenv.from_string(tmpl)
-    print(template.render())
-
+    res = template.render()
+    if res is None:
+        return
+    if res.startswith('<generator object'):
+        tmpl = tmpl[3:-3].split('|')
+        return '"{}"'.format(' | '.join(map(str.strip, tmpl)))
+    return res
 
 def _exit_with_usage(argv):
     msg = """\
@@ -230,7 +235,9 @@ def main():
         except Exception:
             _exit_with_usage(argv)
 
-    clidist(template, seed=seed)
+    res = clidist(template, seed=seed)
+    if res:
+        print(res)
 
 if __name__ == '__main__':
     main()
