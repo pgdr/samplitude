@@ -10,11 +10,14 @@ except ImportError as err:
 import jinja2
 import random
 
+
 def _generator(func):
     def _inner(*args):
         while True:
-            yield(func(*args))
+            yield (func(*args))
+
     return _inner
+
 
 def pairwise(gen):
     _sentinel = object()
@@ -27,15 +30,28 @@ def pairwise(gen):
             prev = _sentinel
     raise StopIteration
 
+
 def rounder(gen, r=3):
     for x in gen:
-        yield(round(x, r))
+        yield (round(x, r))
+
+
+def inter(gen):
+    for x in gen:
+        yield (int(x))
+
 
 def sample(dist, n):
     try:
         return [next(dist) for _ in range(n)]
     except TypeError:
         return dist[:n]
+
+
+def counter(dist):
+    from collections import Counter
+    return Counter(dist)
+
 
 def hist(vals):
     if plt is None:
@@ -44,12 +60,14 @@ def hist(vals):
     plt.show()
     return vals
 
+
 def line(vals):
     if plt is None:
         return vals
     plt.plot(vals)
     plt.show()
     return vals
+
 
 def scatter(vals):
     if plt is None:
@@ -61,7 +79,10 @@ def scatter(vals):
 
 
 def cli(vals):
+    if isinstance(vals, dict):
+        return '\n'.join(['{} {}'.format(k, vals[k]) for k in vals])
     return '\n'.join(map(str, vals))
+
 
 class __cliplot:
     def __init__(self, seed=None):
@@ -72,28 +93,40 @@ class __cliplot:
 
         self.jenv = jinja2.Environment()
         self.jenv.globals.update({
-            'exponential': _generator(self.random.expovariate),  # one param
-            'uniform': _generator(self.random.uniform),
-            'gauss': _generator(self.random.gauss),
-            'normal': _generator(self.random.normalvariate),
-            'lognormal': _generator(self.random.lognormvariate),
-            'triangular': _generator(self.random.triangular),
-            'beta': _generator(self.random.betavariate),
-            'gamma': _generator(self.random.gammavariate),
-            'pareto': _generator(self.random.paretovariate),
-            'vonmises': _generator(self.random.vonmisesvariate),
-            'weibull': _generator(self.random.weibullvariate),
+            'exponential':
+            _generator(self.random.expovariate),  # one param
+            'uniform':
+            _generator(self.random.uniform),
+            'gauss':
+            _generator(self.random.gauss),
+            'normal':
+            _generator(self.random.normalvariate),
+            'lognormal':
+            _generator(self.random.lognormvariate),
+            'triangular':
+            _generator(self.random.triangular),
+            'beta':
+            _generator(self.random.betavariate),
+            'gamma':
+            _generator(self.random.gammavariate),
+            'pareto':
+            _generator(self.random.paretovariate),
+            'vonmises':
+            _generator(self.random.vonmisesvariate),
+            'weibull':
+            _generator(self.random.weibullvariate),
         })
         self.jenv.filters['choice'] = _generator(self.random.choice)
         self.jenv.filters['sample'] = sample
+        self.jenv.filters['counter'] = counter
         self.jenv.filters['pairs'] = pairwise
         self.jenv.filters['shuffle'] = self.shuffle
         self.jenv.filters['round'] = rounder
+        self.jenv.filters['integer'] = inter
         self.jenv.filters['hist'] = hist
         self.jenv.filters['line'] = line
         self.jenv.filters['scatter'] = scatter
         self.jenv.filters['cli'] = cli
-
 
     def shuffle(self, dist):
         dist = list(dist)
