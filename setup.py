@@ -12,10 +12,25 @@ def readme():
     with open(src('README.md'), 'r') as fin:
         return ''.join(fin.readlines())
 
+__pgdr = 'PG Drange <pgdr@equinor.com>'
+__source = 'https://github.com/pgdr/sample'
+__webpage = __source
+
 setup(
-    name='sample',
+    name='sample2',
     packages=['sample'],
-    doc=readme(),
+    description=readme(),
+    author='PG Drange',
+    author_email='pgdr@equinor.com',
+    maintainer=__pgdr,
+    url=__webpage,
+    project_urls={
+        'Bug Tracker': '{}/issues'.format(__source),
+        'Documentation': '{}/blob/master/README.md'.format(__source),
+        'Source Code': __source,
+    },
+    license='GNU GPL v3 or later',
+    keywords='jinja2 jinja random statistics sample distribution plot',
     version='0.0.2',
     install_requires=[
         'numpy>=1.11',
