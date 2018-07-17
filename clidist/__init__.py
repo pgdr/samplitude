@@ -67,6 +67,16 @@ def inter(gen):
         yield (int(x))
 
 
+def scale(gen, s=1):
+    for x in gen:
+        yield x * s
+
+
+def shift(gen, s=0):
+    for x in gen:
+        yield x + s
+
+
 def sample(dist, n):
     try:
         return [next(dist) for _ in range(n)]
@@ -169,6 +179,8 @@ class __clidist:
         self.jenv.filters['shuffle'] = self.shuffle
         self.jenv.filters['round'] = rounder
         self.jenv.filters['integer'] = inter
+        self.jenv.filters['shift'] = shift
+        self.jenv.filters['scale'] = scale
         self.jenv.filters['hist'] = hist
         self.jenv.filters['line'] = line
         self.jenv.filters['scatter'] = scatter
