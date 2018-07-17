@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
+__version__ = '0.0.1'
+
 try:
     import matplotlib.pyplot as plt
 except ImportError as err:
@@ -84,7 +86,7 @@ def cli(vals):
     return '\n'.join(map(str, vals))
 
 
-class __cliplot:
+class __clidist:
     def __init__(self, seed=None):
         if seed is not None:
             self.random = random.Random(seed)
@@ -134,16 +136,28 @@ class __cliplot:
         return dist
 
 
-def cliplot(tmpl, seed=None):
-    gkw = __cliplot(seed)
+def clidist(tmpl, seed=None):
+    gkw = __clidist(seed)
     template = gkw.jenv.from_string(tmpl)
     print(template.render())
 
 
-if __name__ == '__main__':
+def _exit_with_usage(argv):
+    msg = """\
+{0} {1}
+
+Usage:    {0} "cmd" [seed]
+Example:  {0} "normal(100, 5) | sample(1000) | cli"
+          {0} "normal(100, 5) | sample(1000) | cli" 1349
+          {0} "['win', 'draw', 'loss'] | choice | sample(6) | sort | cli"
+""".format(argv[0], __version__)
+    exit(msg)
+
+
+def main():
     from sys import argv
     if not 1 < len(argv) < 4:
-        exit('Usage: app arg [seed]')
+        _exit_with_usage(argv)
 
     template = '{{ %s }}' % argv[1]
     seed = None
@@ -152,6 +166,9 @@ if __name__ == '__main__':
         try:
             seed = int(argv[2])
         except Exception:
-            exit('Usage: app arg seed(int)')
+            _exit_with_usage(argv)
 
-    cliplot(template, seed=seed)
+    clidist(template, seed=seed)
+
+if __name__ == '__main__':
+    main()
