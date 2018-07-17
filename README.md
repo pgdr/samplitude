@@ -108,6 +108,24 @@ is a generator as well and can be placed on either side of `sample`):
 4.8
 ```
 
+The `sample` behavior is equivalent to the `head` program, or from languages
+such as Haskell. The `head` alias is supported:
+```bash
+>>> clidist "uniform(0, 5) | round(2) | head(5) | cli"
+4.58
+4.33
+1.87
+2.09
+4.8
+```
+
+`drop` is also available:
+```bash
+>>> clidist "uniform(0, 5) | round(2) | drop(2) | head(3) | cli"
+1.87
+2.09
+4.8
+```
 
 ### Choices and other operations
 

@@ -52,6 +52,18 @@ def sample(dist, n):
     except TypeError:
         return dist[:n]
 
+def drop(dist, n):
+    try:
+        for _ in range(n):
+            next(dist)
+
+    except TypeError:
+        return dist[n:]
+
+    except StopIteration:
+        pass
+
+    return next(dist)
 
 def counter(dist):
     from collections import Counter
@@ -126,6 +138,8 @@ class __clidist:
         })
         self.jenv.filters['choice'] = _generator(self.random.choice)
         self.jenv.filters['sample'] = sample
+        self.jenv.filters['head'] = sample
+        self.jenv.filters['drop'] = drop
         self.jenv.filters['counter'] = counter
         self.jenv.filters['pairs'] = pairwise
         self.jenv.filters['shuffle'] = self.shuffle
