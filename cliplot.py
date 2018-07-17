@@ -59,6 +59,10 @@ def scatter(vals):
     plt.show()
     return vals
 
+
+def cli(vals):
+    return '\n'.join(map(str, vals))
+
 class __cliplot:
     def __init__(self, seed=None):
         if seed is not None:
@@ -88,6 +92,7 @@ class __cliplot:
         self.jenv.filters['hist'] = hist
         self.jenv.filters['line'] = line
         self.jenv.filters['scatter'] = scatter
+        self.jenv.filters['cli'] = cli
 
 
     def shuffle(self, dist):
@@ -104,13 +109,16 @@ def cliplot(tmpl, seed=None):
 
 if __name__ == '__main__':
     from sys import argv
-    if len(argv) < 2:
+    if not 1 < len(argv) < 4:
         exit('Usage: app arg [seed]')
+
+    template = '{{ %s }}' % argv[1]
+    seed = None
+
     if len(argv) == 3:
         try:
             seed = int(argv[2])
         except Exception:
             exit('Usage: app arg seed(int)')
-        cliplot(argv[1], seed=int(argv[2]))
-    else:
-        cliplot(argv[1])
+
+    cliplot(template, seed=seed)
