@@ -224,7 +224,7 @@ some_file
 ```
 
 ```bash
->>> cat FILE | c "stdin() | cli"
+>>> cat FILE | sample "stdin() | cli"
 # NOOP; cats FILE
 ```
 
