@@ -101,10 +101,13 @@ def counter(dist):
     return Counter(dist)
 
 
-def hist(vals):
+def hist(vals, n_bins=None):
     if plt is None:
         return vals
-    plt.hist(vals, bins='auto')
+    if n_bins is None:
+        plt.hist(vals, bins='auto')
+    else:
+        plt.hist(vals, bins=n_bins)
     plt.show()
     return vals
 
@@ -183,6 +186,7 @@ class __clidist:
         self.jenv.filters['scale'] = scale
         self.jenv.filters['hist'] = hist
         self.jenv.filters['line'] = line
+        self.jenv.filters['plot'] = line  # alias
         self.jenv.filters['scatter'] = scatter
         self.jenv.filters['cli'] = cli
 
