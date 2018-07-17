@@ -42,7 +42,7 @@ def _words_generator():
     import sys
     sys.stderr.write('Warning: words list not found.\n'
                      'Set environment variable DICTIONARY to dict file.\n'
-                     'Or simply pipe to clidist and use `stdin()`.\n')
+                     'Or simply pipe to sample and use `stdin()`.\n')
     return []
 
 def pairwise(gen):
@@ -140,7 +140,7 @@ def cli(vals):
     return '\n'.join(map(str, vals))
 
 
-class __clidist:
+class __sample:
     def __init__(self, seed=None):
         if seed is not None:
             self.random = random.Random(seed)
@@ -204,8 +204,8 @@ class __clidist:
         return dist
 
 
-def clidist(tmpl, seed=None):
-    gkw = __clidist(seed)
+def sample(tmpl, seed=None):
+    gkw = __sample(seed)
     template = gkw.jenv.from_string(tmpl)
     res = template.render()
     if res is None:
@@ -241,7 +241,7 @@ def main():
         except Exception:
             _exit_with_usage(argv)
 
-    res = clidist(template, seed=seed)
+    res = sample(template, seed=seed)
     if res:
         print(res)
 

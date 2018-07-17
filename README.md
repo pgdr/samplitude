@@ -1,4 +1,4 @@
-# clidist
+# sample
 CLI generation and plotting of random variables
 
 ##  Generators
@@ -46,11 +46,11 @@ before consuming!
 
 Install with
 ```bash
-pip install git+https://github.com/pgdr/clidist
+pip install git+https://github.com/pgdr/sample
 ```
 or simply (not possible, though)
 ```bash
-pip install clidist
+pip install sample
 ```
 
 
@@ -58,14 +58,14 @@ pip install clidist
 
 This is pure Jinja2:
 ```bash
->>> clidist "range(5) | list"
+>>> sample "range(5) | list"
 [0, 1, 2, 3, 4]
 ```
 
 However, to get a more UNIXy output, we use `cli` instead of `list`:
 
 ```bash
->>> clidist "range(5) | cli"
+>>> sample "range(5) | cli"
 0
 1
 2
@@ -77,7 +77,7 @@ To limit the output, we use `sample(n)`:
 
 
 ```bash
->>> clidist "range(1000) | sample(5) | cli"
+>>> sample "range(1000) | sample(5) | cli"
 0
 1
 2
@@ -89,7 +89,7 @@ That isn't very helpful on the `range` generator, but is much more helpful on an
 infinite generator, such as the `uniform` generator:
 
 ```bash
->>> clidist "uniform(0, 5) | sample(5) | cli"
+>>> sample "uniform(0, 5) | sample(5) | cli"
 3.3900198868059235
 1.2002767137709318
 0.40999391897569126
@@ -100,7 +100,7 @@ infinite generator, such as the `uniform` generator:
 We can round the output in case we don't need as many digits (note that `round`
 is a generator as well and can be placed on either side of `sample`):
 ```bash
->>> clidist "uniform(0, 5) | round(2) | sample(5) | cli"
+>>> sample "uniform(0, 5) | round(2) | sample(5) | cli"
 4.58
 4.33
 1.87
@@ -115,7 +115,7 @@ is a generator as well and can be placed on either side of `sample`):
 The `sample` behavior is equivalent to the `head` program, or from languages
 such as Haskell. The `head` alias is supported:
 ```bash
->>> clidist "uniform(0, 5) | round(2) | head(5) | cli"
+>>> sample "uniform(0, 5) | round(2) | head(5) | cli"
 4.58
 4.33
 1.87
@@ -125,7 +125,7 @@ such as Haskell. The `head` alias is supported:
 
 `drop` is also available:
 ```bash
->>> clidist "uniform(0, 5) | round(2) | drop(2) | head(3) | cli"
+>>> sample "uniform(0, 5) | round(2) | drop(2) | head(3) | cli"
 1.87
 2.09
 4.8
@@ -135,7 +135,7 @@ To **shift** and **scale** distributions, we can use the `shift(s)` and
 `scale(s)` filters.  To get a Poisson point process starting at 15, we can run
 
 ```bash
->>> clidist "poisson(0.3) | shift(15)"  # equivalent to exponential(0.3)...
+>>> sample "poisson(0.3) | shift(15)"  # equivalent to exponential(0.3)...
 ```
 
 
@@ -145,7 +145,7 @@ Using `choice` with a finite generator gives an infinite generator that chooses
 from the provided generator:
 
 ```bash
->>> clidist "range(0, 11, 2) | choice | sample(6) | cli"
+>>> sample "range(0, 11, 2) | choice | sample(6) | cli"
 8
 0
 8
@@ -157,7 +157,7 @@ from the provided generator:
 Jinja2 supports more generic lists, e.g., lists of string.  Hence, we can write
 
 ```bash
->>> clidist "['win', 'draw', 'loss'] | choice | sample(6) | sort | cli"
+>>> sample "['win', 'draw', 'loss'] | choice | sample(6) | sort | cli"
 draw
 draw
 draw
@@ -169,13 +169,13 @@ win
 ... and as in Python, strings are also iterable:
 
 ```bash
->>> clidist "'HT' | cli"
+>>> sample "'HT' | cli"
 H
 T
 ```
 ... so we can flip six coins with
 ```bash
->>> clidist "'HT' | choice | sample(6) | cli"
+>>> sample "'HT' | choice | sample(6) | cli"
 H
 T
 T
@@ -187,7 +187,7 @@ H
 We can flip 100 coins and count the output with `counter` (which is
 `collections.Counter`)
 ```bash
->>> clidist "'HT' | choice | sample(100) | counter | cli"
+>>> sample "'HT' | choice | sample(100) | counter | cli"
 H 47
 T 53
 ```
@@ -197,7 +197,7 @@ The `sort` functionality does not work as expected on a `Counter` object (a
 _coreutils_:
 
 ```bash
->>> clidist "range(1,7) | choice | sample(100) | counter | cli" | sort -n
+>>> sample "range(1,7) | choice | sample(100) | counter | cli" | sort -n
 1 24
 2 17
 3 18
@@ -206,12 +206,12 @@ _coreutils_:
 6 11
 ```
 
-Using `stdin()` as a generator, we can pipe into `clidist`.  Beware that
+Using `stdin()` as a generator, we can pipe into `sample`.  Beware that
 `stdin()` flushes the input, hence `stdin` (currently) does not work with
 infinite input streams.
 
 ```bash
->>> ls | clidist "stdin() | choice | sample(1) | cli"
+>>> ls | sample "stdin() | choice | sample(1) | cli"
 some_file
 ```
 
@@ -219,7 +219,7 @@ some_file
 Then, if we ever wanted to shuffle `ls` we can run
 
 ```bash
->>> ls | clidist "stdin() | shuffle | cli"
+>>> ls | sample "stdin() | shuffle | cli"
 some_file
 ```
 
@@ -236,25 +236,25 @@ For fun, if you have installed `matplotlib`, we support plotting, `hist` being
 the most useful.
 
 ```bash
->>> clidist "normal(100, 5) | sample(1000) | hist"
+>>> sample "normal(100, 5) | sample(1000) | hist"
 ```
 
-![normal distribution](https://raw.githubusercontent.com/pgdr/clidist/master/assets/hist_normal.png)
+![normal distribution](https://raw.githubusercontent.com/pgdr/sample/master/assets/hist_normal.png)
 
 An exponential distribution can be plotted with `exponential(lamba)`.  Note that
 the `cli` output must be the last filter in the chain, as that is a command-line
 utility only:
 
 ```bash
->>> clidist "normal(100, 5) | sample(1000) | hist | cli"
+>>> sample "normal(100, 5) | sample(1000) | hist | cli"
 ```
 
-![exponential distribution](https://raw.githubusercontent.com/pgdr/clidist/master/assets/hist_exponential.png)
+![exponential distribution](https://raw.githubusercontent.com/pgdr/sample/master/assets/hist_exponential.png)
 
 
 To **repress output after plotting**, you can use the `gobble` filter to empty
 the pipe:
 
 ```bash
->>> clidist "normal(100, 5) | sample(1000) | hist | gobble"
+>>> sample "normal(100, 5) | sample(1000) | hist | gobble"
 ```
