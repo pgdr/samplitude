@@ -24,6 +24,13 @@ In addition to the standard `range` function, we support infinite generators
   than or equal to zero.  If kappa is equal to zero, this distribution reduces
   to a uniform random angle over the range 0 to `2*pi`.
 
+
+We have a special infinite generator (filter) that works on finite generators:
+
+* `choice`,
+
+whose behaviour is explained below.
+
 ## A warning about infinity
 
 All generators are infinite generators, and must be sampled with `sample(n)`
