@@ -20,9 +20,30 @@ def _generator(func):
 
     return _inner
 
+def __listnstrip(gen):
+    return list(map(str.strip, gen))
+
 def _stdin_generator():
     import sys
-    return list(map(str.strip, sys.stdin))
+    return __listnstrip(sys.stdin)
+
+def _words_generator():
+    import os
+    if os.getenv('DICTIONARY') is not None:
+        fname = os.getenv('DICTIONARY')
+        if os.path.isfile(fname):
+            with open(fname, 'r') as fwords:
+                return __listnstrip(fwords.readlines())
+    files = ('/usr/share/dict/words', '/usr/dict/words')
+    for fname in files:
+        if os.path.isfile(fname):
+            with open(fname, 'r') as fwords:
+                return __listnstrip(fwords.readlines())
+    import sys
+    sys.stderr.write('Warning: words list not found.\n'
+                     'Set environment variable DICTIONARY to dict file.\n'
+                     'Or simply pipe to clidist and use `stdin()`.\n')
+    return []
 
 def pairwise(gen):
     _sentinel = object()
@@ -135,6 +156,9 @@ class __clidist:
             # THIS ONE'S SPECIAL
             'stdin':
             _stdin_generator,
+            # Reads (Unix) dictionary file
+            'words':
+            _words_generator,
         })
         self.jenv.filters['choice'] = _generator(self.random.choice)
         self.jenv.filters['sample'] = sample
