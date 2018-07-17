@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 try:
     import matplotlib.pyplot as plt
@@ -45,7 +45,7 @@ def _words_generator():
                      'Or simply pipe to sample and use `stdin()`.\n')
     return []
 
-def pairwise(gen):
+def _pairwise(gen):
     _sentinel = object()
     prev = _sentinel
     for elt in gen:
@@ -57,38 +57,38 @@ def pairwise(gen):
     raise StopIteration
 
 
-def rounder(gen, r=3):
+def _rounder(gen, r=3):
     for x in gen:
         yield (round(x, r))
 
 
-def inter(gen):
+def _inter(gen):
     for x in gen:
         yield (int(x))
 
 
-def scale(gen, s=1):
+def _scale(gen, s=1):
     for x in gen:
         yield x * s
 
 
-def shift(gen, s=0):
+def _shift(gen, s=0):
     for x in gen:
         yield x + s
 
 
-def sample(dist, n):
+def _sample(dist, n):
     try:
         return [next(dist) for _ in range(n)]
     except TypeError:
         return dist[:n]
 
 
-def gobble(*args, **kwargs):
+def _gobble(*args, **kwargs):
     return []
 
 
-def drop(dist, n):
+def _drop(dist, n):
     try:
         for _ in range(n):
             next(dist)
@@ -101,14 +101,15 @@ def drop(dist, n):
 
     return next(dist)
 
-def counter(dist):
+def _counter(dist):
     from collections import Counter
     return Counter(dist)
 
 
-def hist(vals, n_bins=None):
+def _hist(vals, n_bins=None):
     if plt is None:
         return vals
+    vals = list(vals)  # consuming generator
     if n_bins is None:
         plt.hist(vals, bins='auto')
     else:
@@ -117,24 +118,25 @@ def hist(vals, n_bins=None):
     return vals
 
 
-def line(vals):
+def _line(vals):
     if plt is None:
         return vals
+    vals = list(vals)  # consuming generator
     plt.plot(vals)
     plt.show()
     return vals
 
 
-def scatter(vals):
+def _scatter(vals):
     if plt is None:
         return vals
-    x, y = zip(*vals)
+    x, y = zip(*list(vals))
     plt.scatter(x, y)
     plt.show()
     return vals
 
 
-def cli(vals):
+def _cli(vals):
     if isinstance(vals, dict):
         return '\n'.join(['{} {}'.format(k, vals[k]) for k in vals])
     return '\n'.join(map(str, vals))
@@ -143,36 +145,36 @@ def cli(vals):
 class __sample:
     def __init__(self, seed=None):
         if seed is not None:
-            self.random = random.Random(seed)
+            self.__random = random.Random(seed)
         else:
-            self.random = random.Random()
+            self.__random = random.Random()
 
         self.jenv = jinja2.Environment()
         self.jenv.globals.update({
             'exponential':
-            _generator(self.random.expovariate),  # one param
+            _generator(self.__random.expovariate),  # one param
             'poisson':
-            _generator(self.random.expovariate),  # alias
+            _generator(self.__random.expovariate),  # alias
             'uniform':
-            _generator(self.random.uniform),
+            _generator(self.__random.uniform),
             'gauss':
-            _generator(self.random.gauss),
+            _generator(self.__random.gauss),
             'normal':
-            _generator(self.random.normalvariate),
+            _generator(self.__random.normalvariate),
             'lognormal':
-            _generator(self.random.lognormvariate),
+            _generator(self.__random.lognormvariate),
             'triangular':
-            _generator(self.random.triangular),
+            _generator(self.__random.triangular),
             'beta':
-            _generator(self.random.betavariate),
+            _generator(self.__random.betavariate),
             'gamma':
-            _generator(self.random.gammavariate),
+            _generator(self.__random.gammavariate),
             'pareto':
-            _generator(self.random.paretovariate),
+            _generator(self.__random.paretovariate),
             'vonmises':
-            _generator(self.random.vonmisesvariate),
+            _generator(self.__random.vonmisesvariate),
             'weibull':
-            _generator(self.random.weibullvariate),
+            _generator(self.__random.weibullvariate),
             # THIS ONE'S SPECIAL
             'stdin':
             _stdin_generator,
@@ -180,27 +182,27 @@ class __sample:
             'words':
             _words_generator,
         })
-        self.jenv.filters['choice'] = _generator(self.random.choice)
-        self.jenv.filters['sample'] = sample
-        self.jenv.filters['head'] = sample  # alias
-        self.jenv.filters['drop'] = drop
-        self.jenv.filters['gobble'] = gobble
-        self.jenv.filters['counter'] = counter
-        self.jenv.filters['pairs'] = pairwise
-        self.jenv.filters['shuffle'] = self.shuffle
-        self.jenv.filters['round'] = rounder
-        self.jenv.filters['integer'] = inter
-        self.jenv.filters['shift'] = shift
-        self.jenv.filters['scale'] = scale
-        self.jenv.filters['hist'] = hist
-        self.jenv.filters['line'] = line
-        self.jenv.filters['plot'] = line  # alias
-        self.jenv.filters['scatter'] = scatter
-        self.jenv.filters['cli'] = cli
+        self.jenv.filters['choice'] = _generator(self.__random.choice)
+        self.jenv.filters['sample'] = _sample
+        self.jenv.filters['head'] = _sample  # alias
+        self.jenv.filters['drop'] = _drop
+        self.jenv.filters['gobble'] = _gobble
+        self.jenv.filters['counter'] = _counter
+        self.jenv.filters['pairs'] = _pairwise
+        self.jenv.filters['shuffle'] = self._shuffle
+        self.jenv.filters['round'] = _rounder
+        self.jenv.filters['integer'] = _inter
+        self.jenv.filters['shift'] = _shift
+        self.jenv.filters['scale'] = _scale
+        self.jenv.filters['hist'] = _hist
+        self.jenv.filters['line'] = _line
+        self.jenv.filters['plot'] = _line  # alias
+        self.jenv.filters['scatter'] = _scatter
+        self.jenv.filters['cli'] = _cli
 
-    def shuffle(self, dist):
+    def _shuffle(self, dist):
         dist = list(dist)
-        self.random.shuffle(dist)
+        self.__random.shuffle(dist)
         return dist
 
 
@@ -222,8 +224,9 @@ def _exit_with_usage(argv):
 Usage:    {0} "cmd" [seed]
 Example:  {0} "normal(100, 5) | sample(1000) | cli"
           {0} "normal(100, 5) | sample(1000) | cli" 1349
+          {0} "normal(100, 5) | sample(1000) | hist | gobble"
           {0} "['win', 'draw', 'loss'] | choice | sample(6) | sort | cli"
-""".format(argv[0], __version__)
+""".format('sample', __version__)
     exit(msg)
 
 
