@@ -108,6 +108,10 @@ is a generator as well and can be placed on either side of `sample`):
 4.8
 ```
 
+
+
+### Selection and modifications
+
 The `sample` behavior is equivalent to the `head` program, or from languages
 such as Haskell. The `head` alias is supported:
 ```bash
@@ -126,6 +130,14 @@ such as Haskell. The `head` alias is supported:
 2.09
 4.8
 ```
+
+To **shift** and **scale** distributions, we can use the `shift(s)` and
+`scale(s)` filters.  To get a Poisson point process starting at 15, we can run
+
+```bash
+>>> clidist "poisson(0.3) | shift(15)"  # equivalent to exponential(0.3)...
+```
+
 
 ### Choices and other operations
 
