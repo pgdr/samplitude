@@ -31,6 +31,12 @@ We have a special infinite generator (filter) that works on finite generators:
 
 whose behaviour is explained below.
 
+Finally, we have a generator
+
+* `stdin()`
+
+that reads from `stdin`.
+
 ## A warning about infinity
 
 All generators are infinite generators, and must be sampled with `sample(n)`
@@ -163,6 +169,30 @@ The `sort` functionality does not work as expected on a `Counter` object (a
 5 14
 6 11
 ```
+
+Using `stdin()` as a generator, we can pipe into `clidist`.  However, `stdin()`
+flushes the input, hence `stdin` (currently) does not work with infinite input
+streams.
+
+```python
+>>> ls | clidist "stdin() | choice | sample(1) | cli"
+some_file
+```
+
+
+Then, if we ever wanted to shuffle `ls` we can run
+
+```python
+>>> ls | clidist "stdin() | shuffle | cli"
+some_file
+```
+
+```python
+>>> cat FILE | c "stdin() | cli"
+# NOOP
+```
+
+
 
 ### The fun powder plot
 

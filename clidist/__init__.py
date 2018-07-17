@@ -9,8 +9,8 @@ except ImportError as err:
     print('Warning: matplotlib unavailable, plotting disabled')
     plt = None
 
-import jinja2
 import random
+import jinja2
 
 
 def _generator(func):
@@ -20,6 +20,9 @@ def _generator(func):
 
     return _inner
 
+def _stdin_generator():
+    import sys
+    return list(map(str.strip, sys.stdin))
 
 def pairwise(gen):
     _sentinel = object()
@@ -117,6 +120,9 @@ class __clidist:
             _generator(self.random.vonmisesvariate),
             'weibull':
             _generator(self.random.weibullvariate),
+            # THIS ONE'S SPECIAL
+            'stdin':
+            _stdin_generator,
         })
         self.jenv.filters['choice'] = _generator(self.random.choice)
         self.jenv.filters['sample'] = sample
