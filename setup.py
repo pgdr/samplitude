@@ -1,8 +1,8 @@
 from setuptools import setup
 
 setup(
-    name='clidist',
-    packages=['clidist'],
+    name='sample',
+    packages=['sample'],
     version='0.0.1',
     install_requires=[
         'numpy>=1.11',
@@ -10,7 +10,7 @@ setup(
         ],
     entry_points={
         'console_scripts': [
-            'clidist = clidist:main',
+            'sample = sample:main',
         ],
     },
 )
