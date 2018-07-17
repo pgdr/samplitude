@@ -83,6 +83,11 @@ def sample(dist, n):
     except TypeError:
         return dist[:n]
 
+
+def gobble(*args, **kwargs):
+    return []
+
+
 def drop(dist, n):
     try:
         for _ in range(n):
@@ -179,6 +184,7 @@ class __clidist:
         self.jenv.filters['sample'] = sample
         self.jenv.filters['head'] = sample  # alias
         self.jenv.filters['drop'] = drop
+        self.jenv.filters['gobble'] = gobble
         self.jenv.filters['counter'] = counter
         self.jenv.filters['pairs'] = pairwise
         self.jenv.filters['shuffle'] = self.shuffle

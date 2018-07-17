@@ -250,3 +250,11 @@ utility only:
 ```
 
 ![exponential distribution](https://raw.githubusercontent.com/pgdr/clidist/master/assets/hist_exponential.png)
+
+
+To **repress output after plotting**, you can use the `gobble` filter to empty
+the pipe:
+
+```bash
+>>> clidist "normal(100, 5) | sample(1000) | hist | gobble"
+```
