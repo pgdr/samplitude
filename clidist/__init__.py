@@ -146,6 +146,8 @@ class __clidist:
         self.jenv.globals.update({
             'exponential':
             _generator(self.random.expovariate),  # one param
+            'poisson':
+            _generator(self.random.expovariate),  # alias
             'uniform':
             _generator(self.random.uniform),
             'gauss':
@@ -175,7 +177,7 @@ class __clidist:
         })
         self.jenv.filters['choice'] = _generator(self.random.choice)
         self.jenv.filters['sample'] = sample
-        self.jenv.filters['head'] = sample
+        self.jenv.filters['head'] = sample  # alias
         self.jenv.filters['drop'] = drop
         self.jenv.filters['counter'] = counter
         self.jenv.filters['pairs'] = pairwise
