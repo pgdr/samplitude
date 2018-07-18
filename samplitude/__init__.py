@@ -12,6 +12,7 @@ except ImportError as err:
 import random
 import jinja2
 
+from ._samplitude import (sinegenerator, cosinegenerator, tangenerator)
 
 def _generator(func):
     def _inner(*args):
@@ -181,6 +182,13 @@ class __samplitude:
             # Reads (Unix) dictionary file
             'words':
             _words_generator,
+            # custom generators
+            'sin':
+            sinegenerator,
+            'cos':
+            cosinegenerator,
+            'tan':
+            tangenerator,
         })
         self.jenv.filters['choice'] = _generator(self.__random.choice)
         self.jenv.filters['sample'] = _sample
