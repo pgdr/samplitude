@@ -31,7 +31,7 @@ setup(
     },
     license='GNU GPL v3 or later',
     keywords='jinja2 jinja random statistics sample distribution plot',
-    version='0.0.2',
+    version='0.0.3',
     install_requires=[
         'numpy>=1.11',
         'Jinja2',
