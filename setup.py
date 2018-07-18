@@ -13,12 +13,12 @@ def readme():
         return ''.join(fin.readlines())
 
 __pgdr = 'PG Drange <pgdr@equinor.com>'
-__source = 'https://github.com/pgdr/sample'
+__source = 'https://github.com/pgdr/samplitude'
 __webpage = __source
 
 setup(
-    name='sample2',
-    packages=['sample'],
+    name='samplitude',
+    packages=['samplitude'],
     description=readme(),
     author='PG Drange',
     author_email='pgdr@equinor.com',
@@ -38,7 +38,7 @@ setup(
         ],
     entry_points={
         'console_scripts': [
-            'sample = sample:main',
+            'samplitude = samplitude:main',
         ],
     },
 )
