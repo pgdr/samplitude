@@ -65,11 +65,23 @@ We have a special infinite generator (filter) that works on finite generators:
 
 whose behaviour is explained below.
 
-Finally, we have a generator
+For input from files, either use `words` with a specified environment variable
+`DICTIONARY`, or pipe through
 
 * `stdin()`
 
 that reads from `stdin`.
+
+If the file is a csv file, there is a `csv` generator that reads a csv file with
+Pandas and outputs the first column (if nothing else is specified).  Specify the
+column with either an integer index or a column name:
+
+```bash
+>>> s8e "csv('iris.csv', 'virginica') | counter | cli"
+0 50
+1 50
+2 50
+```
 
 ## A warning about infinity
 
@@ -99,7 +111,7 @@ This is pure Jinja2:
 However, to get a more UNIXy output, we use `cli` instead of `list`:
 
 ```bash
->>> samplitude "range(5) | cli"
+>>> s8e "range(5) | cli"
 0
 1
 2
@@ -111,7 +123,7 @@ To limit the output, we use `sample(n)`:
 
 
 ```bash
->>> samplitude "range(1000) | sample(5) | cli"
+>>> s8e "range(1000) | sample(5) | cli"
 0
 1
 2

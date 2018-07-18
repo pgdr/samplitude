@@ -24,6 +24,22 @@ def _generator(func):
 def __listnstrip(gen):
     return list(map(str.strip, gen))
 
+def _csv_generator(fname, col=None, sep=None):
+    try:
+        import pandas as pd
+    except ImportError:
+        print('Warning: pandas unavailable, csv disabled')
+        return []
+    if sep is None:
+        df = pd.read_csv(fname)
+    else:
+        df = pd.read_csv(fname, sep=sep)
+    if col is None:
+        return df[df.columns[0]]
+    if isinstance(col, int):
+        return df[df.columns[col]]
+    return df[col]
+
 def _stdin_generator():
     import sys
     return __listnstrip(sys.stdin)
@@ -181,6 +197,9 @@ class __samplitude:
             # THIS ONE'S SPECIAL
             'stdin':
             _stdin_generator,
+            # Pandas
+            'csv':
+            _csv_generator,
             # Reads (Unix) dictionary file
             'words':
             _words_generator,
