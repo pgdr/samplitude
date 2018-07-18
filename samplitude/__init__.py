@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-__version__ = '0.0.7'
+__version__ = '0.0.8'
 
 try:
     import matplotlib.pyplot as plt
