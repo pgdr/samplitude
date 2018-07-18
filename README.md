@@ -32,6 +32,7 @@ samplitude "sin(0.31415) | sample(5) | round | max | cli"
 0.951
 ```
 
+For simplicity, **s8e** is an alias for samplitude.
 
 
 ##  Generators
@@ -122,7 +123,7 @@ That isn't very helpful on the `range` generator, but is much more helpful on an
 infinite generator, such as the `uniform` generator:
 
 ```bash
->>> samplitude "uniform(0, 5) | sample(5) | cli"
+>>> s8e "uniform(0, 5) | sample(5) | cli"
 3.3900198868059235
 1.2002767137709318
 0.40999391897569126
@@ -133,7 +134,7 @@ infinite generator, such as the `uniform` generator:
 We can round the output in case we don't need as many digits (note that `round`
 is a generator as well and can be placed on either side of `sample`):
 ```bash
->>> samplitude "uniform(0, 5) | round(2) | sample(5) | cli"
+>>> s8e "uniform(0, 5) | round(2) | sample(5) | cli"
 4.58
 4.33
 1.87
@@ -158,7 +159,7 @@ such as Haskell. The `head` alias is supported:
 
 `drop` is also available:
 ```bash
->>> samplitude "uniform(0, 5) | round(2) | drop(2) | head(3) | cli"
+>>> s8e "uniform(0, 5) | round(2) | drop(2) | head(3) | cli"
 1.87
 2.09
 4.8
@@ -168,7 +169,7 @@ To **shift** and **scale** distributions, we can use the `shift(s)` and
 `scale(s)` filters.  To get a Poisson point process starting at 15, we can run
 
 ```bash
->>> samplitude "poisson(0.3) | shift(15)"  # equivalent to exponential(0.3)...
+>>> s8e "poisson(0.3) | shift(15)"  # equivalent to exponential(0.3)...
 ```
 
 
@@ -190,7 +191,7 @@ from the provided generator:
 Jinja2 supports more generic lists, e.g., lists of string.  Hence, we can write
 
 ```bash
->>> samplitude "['win', 'draw', 'loss'] | choice | sample(6) | sort | cli"
+>>> s8e "['win', 'draw', 'loss'] | choice | sample(6) | sort | cli"
 draw
 draw
 draw
@@ -202,13 +203,13 @@ win
 ... and as in Python, strings are also iterable:
 
 ```bash
->>> samplitude "'HT' | cli"
+>>> s8e "'HT' | cli"
 H
 T
 ```
 ... so we can flip six coins with
 ```bash
->>> samplitude "'HT' | choice | sample(6) | cli"
+>>> s8e "'HT' | choice | sample(6) | cli"
 H
 T
 T
@@ -220,7 +221,7 @@ H
 We can flip 100 coins and count the output with `counter` (which is
 `collections.Counter`)
 ```bash
->>> samplitude "'HT' | choice | sample(100) | counter | cli"
+>>> s8e "'HT' | choice | sample(100) | counter | cli"
 H 47
 T 53
 ```
@@ -230,7 +231,7 @@ The `sort` functionality does not work as expected on a `Counter` object (a
 _coreutils_:
 
 ```bash
->>> samplitude "range(1,7) | choice | sample(100) | counter | cli" | sort -n
+>>> s8e "range(1,7) | choice | sample(100) | counter | cli" | sort -n
 1 24
 2 17
 3 18
@@ -279,7 +280,7 @@ the `cli` output must be the last filter in the chain, as that is a command-line
 utility only:
 
 ```bash
->>> samplitude "normal(100, 5) | sample(1000) | hist | cli"
+>>> s8e "normal(100, 5) | sample(1000) | hist | cli"
 ```
 
 ![exponential distribution](https://raw.githubusercontent.com/pgdr/samplitude/master/assets/hist_exponential.png)
@@ -289,5 +290,5 @@ To **repress output after plotting**, you can use the `gobble` filter to empty
 the pipe:
 
 ```bash
->>> samplitude "normal(100, 5) | sample(1000) | hist | gobble"
+>>> s8e "normal(100, 5) | sample(1000) | hist | gobble"
 ```
