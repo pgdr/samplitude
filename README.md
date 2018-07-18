@@ -22,7 +22,7 @@ turn infinite generators into finite generators (like `sample` and `gobble`),
 and some filters can turn finite generators into infinite generators, such as
 `choice`.
 
-_Consumers_ are any filter that necessarily flush the input; `list`, `cli`,
+_Consumers_ are filters that necessarily flush the input; `list`, `cli`,
 `tojson`, `unique`, and the plotting tools, `hist`, `scatter` and `line` are
 examples of consumers.  The `list` consumer is a Jinja2 built-in, and other
 Jinja2 consumers are `sum`, `min`, and `max`:
@@ -70,7 +70,7 @@ For input from files, either use `words` with a specified environment variable
 
 * `stdin()`
 
-that reads from `stdin`.
+which reads from `stdin`.
 
 If the file is a csv file, there is a `csv` generator that reads a csv file with
 Pandas and outputs the first column (if nothing else is specified).  Specify the
@@ -85,8 +85,8 @@ column with either an integer index or a column name:
 
 ## A warning about infinity
 
-All generators are infinite generators, and must be sampled with `sample(n)`
-before consuming!
+All generators are (potentially) infinite generators, and must be sampled with
+`sample(n)` before consuming!
 
 ## Usage and installation
 
@@ -200,7 +200,7 @@ from the provided generator:
 6
 ```
 
-Jinja2 supports more generic lists, e.g., lists of string.  Hence, we can write
+Jinja2 supports more generic lists, e.g., lists of strings.  Hence, we can write
 
 ```bash
 >>> s8e "['win', 'draw', 'loss'] | choice | sample(6) | sort | cli"
