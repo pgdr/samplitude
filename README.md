@@ -304,3 +304,12 @@ the pipe:
 ```bash
 >>> s8e "normal(100, 5) | sample(1000) | hist | gobble"
 ```
+
+Although `hist` is the most useful, one could imaging running `s8e` on
+timeseries, where a `line` plot makes most sense:
+
+```bash
+>>> s8e "sin(22/700) | sample(200) | line"
+```
+
+![sine and line](https://raw.githubusercontent.com/pgdr/samplitude/master/assets/line_sine.png)
