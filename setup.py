@@ -4,6 +4,12 @@ from setuptools import setup
 
 import os
 
+__pgdr = 'PG Drange <pgdr@equinor.com>'
+__source = 'https://github.com/pgdr/samplitude'
+__webpage = __source
+__description = "Samplitude (s8e) is a statistical distributions command line tool"
+
+
 def src(x):
     root = os.path.dirname(__file__)
     return os.path.abspath(os.path.join(root, x))
@@ -14,17 +20,15 @@ def _read_file(fname, op):
 
 
 def requirements():
-    return _read_file('requirements.txt',
-                      lambda lines: list(map(str.strip, lines)))
+    return ['numpy>=1.11', 'Jinja2']
+
 
 def readme():
-    return _read_file('README.md',
-                      lambda lines: ''.join(lines))
-
-__pgdr = 'PG Drange <pgdr@equinor.com>'
-__source = 'https://github.com/pgdr/samplitude'
-__webpage = __source
-__description = "Samplitude (s8e) is a statistical distributions command line tool"
+    try:
+        return _read_file('README.md',
+                          lambda lines: ''.join(lines))
+    except:
+        return __description
 
 setup(
     name='samplitude',
