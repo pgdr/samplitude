@@ -1,5 +1,29 @@
 # samplitude
-CLI generation and plotting of random variables
+
+CLI generation and plotting of random variables:
+
+```
+$ samplitude "sin(0.31415) | sample(6) | round | cli"
+0.0
+0.309
+0.588
+0.809
+0.951
+1.0
+```
+
+The word _samplitude_ is a portmanteau of _sample_ and _amplitude_.  This
+project also started as an étude, hence should be pronounced _sampl-étude_.
+
+`samplitude` is a chain starting with a _generator_, followed by zero or more
+_filters_, followed by a consumer.  Most generators are infinite (with the
+exception of `range` and `lists` and possibly `stdin`).  Some of the filters can
+turn infinite generators into finite generators (like `sample` and `gobble`),
+and some filters can turn finite generators into infinite generators, such as
+`choice`.
+
+Consumers are `list`, `cli`, and the plotting tools, `hist`, `scatter` and
+`line`.
 
 ##  Generators
 
