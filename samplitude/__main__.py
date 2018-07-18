@@ -1,2 +1,2 @@
-from sample import main
+from samplitude import main
 main()

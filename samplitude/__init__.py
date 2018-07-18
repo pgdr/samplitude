@@ -42,7 +42,7 @@ def _words_generator():
     import sys
     sys.stderr.write('Warning: words list not found.\n'
                      'Set environment variable DICTIONARY to dict file.\n'
-                     'Or simply pipe to sample and use `stdin()`.\n')
+                     'Or simply pipe to samplitude and use `stdin()`.\n')
     return []
 
 def _pairwise(gen):
@@ -142,7 +142,7 @@ def _cli(vals):
     return '\n'.join(map(str, vals))
 
 
-class __sample:
+class __samplitude:
     def __init__(self, seed=None):
         if seed is not None:
             self.__random = random.Random(seed)
@@ -206,8 +206,8 @@ class __sample:
         return dist
 
 
-def sample(tmpl, seed=None):
-    gkw = __sample(seed)
+def samplitude(tmpl, seed=None):
+    gkw = __samplitude(seed)
     template = gkw.jenv.from_string(tmpl)
     res = template.render()
     if res is None:
@@ -226,7 +226,7 @@ Example:  {0} "normal(100, 5) | sample(1000) | cli"
           {0} "normal(100, 5) | sample(1000) | cli" 1349
           {0} "normal(100, 5) | sample(1000) | hist | gobble"
           {0} "['win', 'draw', 'loss'] | choice | sample(6) | sort | cli"
-""".format('sample', __version__)
+""".format('samplitude', __version__)
     exit(msg)
 
 
@@ -244,7 +244,7 @@ def main():
         except Exception:
             _exit_with_usage(argv)
 
-    res = sample(template, seed=seed)
+    res = samplitude(template, seed=seed)
     if res:
         print(res)
 
