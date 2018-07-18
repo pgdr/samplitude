@@ -24,11 +24,7 @@ def readme():
 __pgdr = 'PG Drange <pgdr@equinor.com>'
 __source = 'https://github.com/pgdr/samplitude'
 __webpage = __source
-__description = """\
-Samplitude (s8e) is a command line tool for generating and manipulating
-statistical distributions, discrete distributions, using statistical
-tools on files and standard in, etc.\
-"""
+__description = "Samplitude (s8e) is a statistical distributions command line tool"
 
 setup(
     name='samplitude',
@@ -47,7 +43,7 @@ setup(
     },
     license='GNU GPL v3 or later',
     keywords='jinja2 jinja random statistics sample distribution plot',
-    version='0.0.5',
+    version='0.0.6',
     install_requires=requirements(),
     entry_points={
         'console_scripts': [
