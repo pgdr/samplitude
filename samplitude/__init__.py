@@ -140,6 +140,8 @@ def _scatter(vals):
 def _cli(vals):
     if isinstance(vals, dict):
         return '\n'.join(['{} {}'.format(k, vals[k]) for k in vals])
+    elif isinstance(vals, (int, float, complex)):
+        vals = [vals]
     return '\n'.join(map(str, vals))
 
 

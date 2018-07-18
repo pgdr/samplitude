@@ -2,7 +2,7 @@
 
 CLI generation and plotting of random variables:
 
-```
+```bash
 $ samplitude "sin(0.31415) | sample(6) | round | cli"
 0.0
 0.309
@@ -22,8 +22,17 @@ turn infinite generators into finite generators (like `sample` and `gobble`),
 and some filters can turn finite generators into infinite generators, such as
 `choice`.
 
-Consumers are `list`, `cli`, and the plotting tools, `hist`, `scatter` and
-`line`.
+_Consumers_ are any filter that necessarily flush the input; `list`, `cli`,
+`tojson`, `unique`, and the plotting tools, `hist`, `scatter` and `line` are
+examples of consumers.  The `list` consumer is a Jinja2 built-in, and other
+Jinja2 consumers are `sum`, `min`, and `max`:
+
+```bash
+samplitude "sin(0.31415) | sample(5) | round | max | cli"
+0.951
+```
+
+
 
 ##  Generators
 
