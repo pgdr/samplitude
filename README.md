@@ -46,11 +46,11 @@ before consuming!
 
 Install with
 ```bash
-pip install git+https://github.com/pgdr/samplitude
-```
-or simply (not possible, though)
-```bash
 pip install samplitude
+```
+or to get bleeding release,
+```bash
+pip install git+https://github.com/pgdr/samplitude
 ```
 
 
