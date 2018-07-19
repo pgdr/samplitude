@@ -85,13 +85,22 @@ def _inter(gen):
 
 
 def _scale(gen, s=1):
-    for x in gen:
-        yield x * s
+    if isinstance(s, (int, float, complex)):
+        for x in gen:
+            yield x * s
+    else:
+        for x, y in zip(gen, s):
+            yield x * y
 
 
 def _shift(gen, s=0):
-    for x in gen:
-        yield x + s
+    if isinstance(s, (int, float, complex)):
+        for x in gen:
+            yield x + s
+    else:
+        for x, y in zip(gen, s):
+            yield x + y
+
 
 
 def _sample(dist, n):

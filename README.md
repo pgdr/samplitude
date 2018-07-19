@@ -184,6 +184,15 @@ To **shift** and **scale** distributions, we can use the `shift(s)` and
 >>> s8e "poisson(0.3) | shift(15)"  # equivalent to exponential(0.3)...
 ```
 
+Both `shift` and `scale` work on generators, so to add `sin(0.1)` and
+`sin(0.2)`, we can run
+```bash
+>>> s8e "sin(0.1) | shift(sin(0.2)) | sample(10) | cli"
+```
+
+![sin(0.1)+sin(0.2) line](https://raw.githubusercontent.com/pgdr/samplitude/master/assets/line_sin01sin02.png)
+
+
 
 ### Choices and other operations
 
