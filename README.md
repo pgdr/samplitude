@@ -322,3 +322,14 @@ timeseries, where a `line` plot makes most sense:
 ```
 
 ![sine and line](https://raw.githubusercontent.com/pgdr/samplitude/master/assets/line_sine.png)
+
+### Fourier
+
+A fourier transform is offered as a filter `fft`:
+
+
+```bash
+>>> samplitude "sin(0.1) | shift(sin(0.2)) | sample(1000) | fft | line | gobble"
+```
+
+![fft line](https://raw.githubusercontent.com/pgdr/samplitude/master/assets/line_fft.png)

@@ -62,6 +62,21 @@ def _words_generator():
                      'Or simply pipe to samplitude and use `stdin()`.\n')
     return []
 
+
+def _fft(gen):
+    import numpy as np
+    import scipy.fftpack
+    gen = np.array(gen)
+    N = len(gen)
+    f = scipy.fftpack.fft(gen)
+    return list(f[:N//2])
+
+def _dropna(gen):
+    for x in gen:
+        if x != x:
+            continue
+        yield x
+
 def _pairwise(gen):
     _sentinel = object()
     prev = _sentinel
@@ -232,6 +247,8 @@ class __samplitude:
         self.jenv.filters['integer'] = _inter
         self.jenv.filters['shift'] = _shift
         self.jenv.filters['scale'] = _scale
+        self.jenv.filters['fft'] = _fft
+        self.jenv.filters['dropna'] = _dropna
         self.jenv.filters['hist'] = _hist
         self.jenv.filters['line'] = _line
         self.jenv.filters['plot'] = _line  # alias
