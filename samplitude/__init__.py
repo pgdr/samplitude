@@ -119,11 +119,11 @@ def _shift(gen, s=0):
 
 
 def _sample(dist, n):
-    try:
-        return [next(dist) for _ in range(n)]
-    except TypeError:
-        return dist[:n]
-
+    for x in dist:
+        if n <= 0:
+            return
+        yield x
+        n -= 1
 
 def _gobble(*args, **kwargs):
     return []
