@@ -76,6 +76,9 @@ If the file is a csv file, there is a `csv` generator that reads a csv file with
 Pandas and outputs the first column (if nothing else is specified).  Specify the
 column with either an integer index or a column name:
 
+Finally, the `cross` generator takes two generators and computes a cross-product
+of these.
+
 ```bash
 >>> s8e "csv('iris.csv', 'virginica') | counter | cli"
 0 50
@@ -322,6 +325,15 @@ timeseries, where a `line` plot makes most sense:
 ```
 
 ![sine and line](https://raw.githubusercontent.com/pgdr/samplitude/master/assets/line_sine.png)
+
+
+The scatter function can also be used, but requires that the input stream is a
+stream of pairs, which can be obtained either by the `cross` generator, or via
+the `pair` or `counter` filter.
+
+![scatter normal](https://raw.githubusercontent.com/pgdr/samplitude/master/assets/scatter_normal_counter.png)
+
+
 
 ### Fourier
 

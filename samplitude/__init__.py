@@ -146,6 +146,9 @@ def _counter(dist):
     from collections import Counter
     return Counter(dist)
 
+def _cross(A, B):
+    return tuple(a+b
+                 for a in A for b in B)
 
 def _hist(vals, n_bins=None):
     if plt is None:
@@ -239,6 +242,8 @@ class __samplitude:
             cosinegenerator,
             'tan':
             tangenerator,
+            'cross':
+            _cross,
         })
         self.jenv.filters['choice'] = _generator(self.__random.choice)
         self.jenv.filters['sample'] = _sample
