@@ -152,7 +152,10 @@ def _hist(vals, n_bins=None):
         return vals
     vals = list(vals)  # consuming generator
     if n_bins is None:
-        plt.hist(vals, bins='auto')
+        try:
+            plt.hist(vals, bins='auto')
+        except:
+            plt.hist(vals)
     else:
         plt.hist(vals, bins=n_bins)
     plt.show()
@@ -171,6 +174,8 @@ def _line(vals):
 def _scatter(vals):
     if plt is None:
         return vals
+    if isinstance(vals, dict):
+        vals = vals.items()
     x, y = zip(*list(vals))
     plt.scatter(x, y)
     plt.show()
