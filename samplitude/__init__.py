@@ -14,6 +14,12 @@ import jinja2
 
 from ._samplitude import (sinegenerator, cosinegenerator, tangenerator)
 
+class __set(frozenset):
+    # for nicer repr only
+    def __repr__(self):
+        content = ', '.join(map(str, sorted(self)))
+        return '{%s}' % content
+
 def _generator(func):
     def _inner(*args):
         while True:
@@ -146,8 +152,24 @@ def _counter(dist):
     from collections import Counter
     return Counter(dist)
 
-def _cross(A, B):
-    return tuple(a+b
+def _cross(A, B, combiner=None):
+    comb = lambda x,y: tuple((x,y))
+    if combiner in ('add', '+'):
+        comb = lambda x,y: x+y
+    elif combiner in ('minus', 'sub', '-'):
+        comb = lambda x,y: x - y
+    elif combiner in ('mul', '*'):
+        comb = lambda x,y: x * y
+    elif combiner in ('div', '/'):
+        comb = lambda x,y: x / y
+    elif combiner in ('idiv', '//'):
+        comb = lambda x,y: x // y
+    elif combiner == 'set':
+        comb = lambda x,y: __set((x, y))
+    elif combiner.startswith('concat'):
+        comb = lambda x,y: '{}{}'.format(x, y)
+
+    return tuple(comb(a,b)
                  for a in A for b in B)
 
 def _hist(vals, n_bins=None):
