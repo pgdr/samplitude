@@ -328,8 +328,12 @@ timeseries, where a `line` plot makes most sense:
 
 
 The scatter function can also be used, but requires that the input stream is a
-stream of pairs, which can be obtained either by the `cross` generator, or via
-the `pair` or `counter` filter.
+stream of pairs, which can be obtained either by the `product` generator, or via
+the `pair` or `counter` filter:
+
+```bash
+s8e "normal(100, 10) | sample(10**5) | round(0) | counter | scatter"
+```
 
 ![scatter normal](https://raw.githubusercontent.com/pgdr/samplitude/master/assets/scatter_normal_counter.png)
 
