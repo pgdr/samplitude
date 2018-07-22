@@ -76,7 +76,7 @@ If the file is a csv file, there is a `csv` generator that reads a csv file with
 Pandas and outputs the first column (if nothing else is specified).  Specify the
 column with either an integer index or a column name:
 
-Finally, the `cross` generator takes two generators and computes a cross-product
+Finally, the `product` generator takes two generators and computes a product-product
 of these.
 
 ```bash
@@ -85,6 +85,14 @@ of these.
 1 50
 2 50
 ```
+
+In addition, we have `combinations` and `permutations` that are inherited from
+itertools and behave exactly like those.
+
+```bash
+s8e "'ABC' | permutations | cli"
+```
+
 
 ## A warning about infinity
 

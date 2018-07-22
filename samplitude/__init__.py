@@ -10,6 +10,7 @@ except ImportError as err:
     plt = None
 
 import random
+import itertools
 import jinja2
 
 from ._samplitude import (sinegenerator, cosinegenerator, tangenerator)
@@ -148,13 +149,16 @@ def _drop(dist, n):
 
     return next(dist)
 
+
 def _counter(dist):
     from collections import Counter
     return Counter(dist)
 
-def _cross(A, B, combiner=None):
-    comb = lambda x,y: tuple((x,y))
-    if combiner in ('add', '+'):
+
+def _product(A, B, combiner=None):
+    if combiner is None or combiner == 'tuple':
+        comb = lambda x,y: tuple((x,y))
+    elif combiner in ('add', '+'):
         comb = lambda x,y: x+y
     elif combiner in ('minus', 'sub', '-'):
         comb = lambda x,y: x - y
@@ -171,6 +175,19 @@ def _cross(A, B, combiner=None):
 
     return tuple(comb(a,b)
                  for a in A for b in B)
+
+
+def _permutations(gen, r=None):
+    inp = list(gen)
+    for perm in itertools.permutations(gen, r=r):
+        yield perm
+
+
+def _combinations(gen, r):
+    inp = list(gen)
+    for comb in itertools.combinations(gen, r=r):
+        yield comb
+
 
 def _hist(vals, n_bins=None):
     if plt is None:
@@ -264,8 +281,8 @@ class __samplitude:
             cosinegenerator,
             'tan':
             tangenerator,
-            'cross':
-            _cross,
+            'product':
+            _product,
         })
         self.jenv.filters['choice'] = _generator(self.__random.choice)
         self.jenv.filters['sample'] = _sample
@@ -286,6 +303,8 @@ class __samplitude:
         self.jenv.filters['plot'] = _line  # alias
         self.jenv.filters['scatter'] = _scatter
         self.jenv.filters['cli'] = _cli
+        self.jenv.filters['permutations'] = _permutations
+        self.jenv.filters['combinations'] = _combinations
 
     def _shuffle(self, dist):
         dist = list(dist)
