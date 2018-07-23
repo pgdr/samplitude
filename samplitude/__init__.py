@@ -132,6 +132,12 @@ def _sample(dist, n):
         yield x
         n -= 1
 
+
+def _elt_join(gen, sep=' '):
+    for x in gen:
+        yield sep.join(map(str, x))
+
+
 def _gobble(*args, **kwargs):
     return []
 
@@ -303,6 +309,7 @@ class __samplitude:
         self.jenv.filters['plot'] = _line  # alias
         self.jenv.filters['scatter'] = _scatter
         self.jenv.filters['cli'] = _cli
+        self.jenv.filters['elt_join'] = _elt_join
         self.jenv.filters['permutations'] = _permutations
         self.jenv.filters['combinations'] = _combinations
 

@@ -93,6 +93,28 @@ itertools and behave exactly like those.
 s8e "'ABC' | permutations | cli"
 ```
 
+However, the output of this is rather non-UNIXy, with the abstractions leaking through:
+```bash
+s8e "'HT' | permutations | cli"
+('H', 'T')
+('T', 'H')
+```
+
+So to get a better output, we can use an _elementwise join_ `elt_join`:
+```bash
+s8e "'HT' | permutations | elt_join | cli"
+H T
+T H
+```
+
+which also takes a seperator as argument:
+```bash
+samplitude "'HT' | permutations | elt_join(';') | cli"
+H;T
+T;H
+```
+
+
 
 ## A warning about infinity
 
