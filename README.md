@@ -76,9 +76,6 @@ If the file is a csv file, there is a `csv` generator that reads a csv file with
 Pandas and outputs the first column (if nothing else is specified).  Specify the
 column with either an integer index or a column name:
 
-Finally, the `product` generator takes two generators and computes a product-product
-of these.
-
 ```bash
 >>> s8e "csv('iris.csv', 'virginica') | counter | cli"
 0 50
@@ -86,7 +83,7 @@ of these.
 2 50
 ```
 
-In addition, we have `combinations` and `permutations` that are inherited from
+Finally, we have `combinations` and `permutations` that are inherited from
 itertools and behave exactly like those.
 
 ```bash
@@ -114,7 +111,22 @@ H;T
 T;H
 ```
 
+This is already supported by Jinja's `map` function (notice the strings around `join`):
+```bash
+samplitude "'HT' | permutations | map('join', ';') | cli"
+H;T
+T;H
+```
 
+We can thus count the number of permutations of a set of size 10:
+```bash
+s8e "range(10) | permutations | len"
+3628800
+```
+
+
+The `product` generator takes two generators and computes a cross-product of
+these.  In addition,
 
 ## A warning about infinity
 

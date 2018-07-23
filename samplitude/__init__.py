@@ -142,6 +142,13 @@ def _gobble(*args, **kwargs):
     return []
 
 
+def _len(gen):
+    try:
+        return len(gen)
+    except TypeError:
+        return len(list(gen))
+
+
 def _drop(dist, n):
     try:
         for _ in range(n):
@@ -309,6 +316,7 @@ class __samplitude:
         self.jenv.filters['plot'] = _line  # alias
         self.jenv.filters['scatter'] = _scatter
         self.jenv.filters['cli'] = _cli
+        self.jenv.filters['len'] = _len
         self.jenv.filters['elt_join'] = _elt_join
         self.jenv.filters['permutations'] = _permutations
         self.jenv.filters['combinations'] = _combinations
