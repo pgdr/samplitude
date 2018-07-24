@@ -133,6 +133,20 @@ def _sample(dist, n):
         n -= 1
 
 
+def _swap(gen):
+    if isinstance(gen, dict):
+        for k in sorted(gen.keys()):
+            yield (gen[k], k)
+        return
+    for elt in gen:
+        if isinstance(elt, tuple):
+            eltp = list(elt)
+            eltp.reverse()
+            yield tuple(eltp)
+        else:
+            elt.reverse()
+            yield elt
+
 def _elt_join(gen, sep=' '):
     for x in gen:
         yield sep.join(map(str, x))
@@ -161,6 +175,16 @@ def _drop(dist, n):
         pass
 
     return next(dist)
+
+
+def _sort(gen):
+    if isinstance(gen, (int, float, complex)):
+        return (gen,)
+    if isinstance(gen, dict):
+        return ((k, gen[k])
+                for k in sorted(gen.keys()))
+    gen = list(gen)
+    return tuple(sorted(gen))
 
 
 def _counter(dist):
@@ -304,6 +328,7 @@ class __samplitude:
         self.jenv.filters['gobble'] = _gobble
         self.jenv.filters['counter'] = _counter
         self.jenv.filters['pairs'] = _pairwise
+        self.jenv.filters['sort'] = _sort
         self.jenv.filters['shuffle'] = self._shuffle
         self.jenv.filters['round'] = _rounder
         self.jenv.filters['integer'] = _inter
@@ -318,6 +343,7 @@ class __samplitude:
         self.jenv.filters['cli'] = _cli
         self.jenv.filters['len'] = _len
         self.jenv.filters['elt_join'] = _elt_join
+        self.jenv.filters['swap'] = _swap
         self.jenv.filters['permutations'] = _permutations
         self.jenv.filters['combinations'] = _combinations
 

@@ -292,19 +292,35 @@ H 47
 T 53
 ```
 
-The `sort` functionality does not work as expected on a `Counter` object (a
-`dict` type), so if we want the output sorted, we pipe through `sort` from
-_coreutils_:
+The `sort` functionality works as expected on a `Counter` object (a
+`dict` type), so if we want the output sorted by key, we can run
 
 ```bash
->>> s8e "range(1,7) | choice | sample(100) | counter | cli" | sort -n
-1 24
-2 17
-3 18
-4 16
-5 14
-6 11
+>>> s8e "range(1,7) | choice | sample(100) | counter | sort | elt_join | cli" 42 # seed=42
+1 17
+2 21
+3 12
+4 21
+5 13
+6 16
 ```
+
+There is a minor hack to sort by value, namely by `swap`-ing the Counter twice:
+```bash
+>>> s8e "range(1,7) | choice | sample(100) |
+         counter | swap | sort | swap | elt_join | cli" 42 # seed=42
+3 12
+5 13
+6 16
+1 17
+2 21
+4 21
+```
+
+The `swap` filter does an element-wise reverse, with element-wise reverse
+defined on a dictionary as a list of `(value, key)` for each key-value pair in
+the dictionary.
+
 
 Using `stdin()` as a generator, we can pipe into `samplitude`.  Beware that
 `stdin()` flushes the input, hence `stdin` (currently) does not work with
