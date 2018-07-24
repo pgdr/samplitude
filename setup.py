@@ -47,7 +47,7 @@ setup(
     },
     license='GNU GPL v3 or later',
     keywords='jinja2 jinja random statistics sample distribution plot',
-    version='0.0.10',
+    version='0.0.11',
     install_requires=requirements(),
     entry_points={
         'console_scripts': [
