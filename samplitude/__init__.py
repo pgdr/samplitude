@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-__version__ = '0.0.12'
+__version__ = '0.0.13'
+__all__ = ['samplitude']
 
 try:
     import matplotlib.pyplot as plt
@@ -352,8 +353,21 @@ class __samplitude:
         self.__random.shuffle(dist)
         return dist
 
+def __verify_no_jinja_braces(tmpl):
+    tmpl = str(tmpl).strip()
+    if tmpl.startswith('{{'):
+        tmpl = tmpl[2:]
+        raise UserWarning('Do not prefix with "{{".')
+    if tmpl.endswith('}}'):
+        tmpl = tmpl[:-2]
+        raise UserWarning('Do not postfix with "}}".')
+    return tmpl
 
 def samplitude(tmpl, seed=None):
+    tmpl = '{{ %s }}' % __verify_no_jinja_braces(tmpl)
+    if not tmpl:
+        raise ValueError('Empty template')
+
     gkw = __samplitude(seed)
     template = gkw.jenv.from_string(tmpl)
     res = template.render()
@@ -382,7 +396,7 @@ def main():
     if not 1 < len(argv) < 4:
         _exit_with_usage(argv)
 
-    template = '{{ %s }}' % argv[1]
+    template = argv[1]
     seed = None
 
     if len(argv) == 3:
