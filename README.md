@@ -407,3 +407,91 @@ A fourier transform is offered as a filter `fft`:
 ```
 
 ![fft line](https://raw.githubusercontent.com/pgdr/samplitude/master/assets/line_fft.png)
+
+
+## Your own filter
+
+If you use Samplitude programmatically, you can register your own filter by
+sending a dictionary
+
+```
+{'name1' : filter1,
+ 'name2' : filter2,
+ ...,
+ 'namen': filtern,
+}
+```
+to the `samplitude` function.
+
+### Example: secretary problem
+Suppose you want to emulate the secretary problem ...
+
+#### Intermezzo: The problem
+For those not familiar, you are a boss, Alice, who wants to hire a new secretary
+Bob.  Suppose you want to hire the tallest Bob of all your candidates, but the
+candidates arrive in a stream, and you only the number of candidates.  For each
+candidate, you have to accept (hire) or reject the candidate.  Once you have
+rejected a candidate, you cannot undo the decision.
+
+The solution to this problem is to look at the first `n/e` (`e~2.71828` being
+the Euler constant), and thereafter accept the first candidate taller than all
+of the `n/e` first candidates.
+
+#### A Samplitude solution
+
+Let `normal(170, 10)` be the candidate generator, and let `n=100`.  We create a
+filter `secretary` that takes a stream and an integer (`n`) and picks according
+to the solution.  In order to assess the quality of the solution, we want to
+restream the entire population, and annotate the one we choose.  Let `(c,
+False)` denote a candidate we rejected, and `(c, True)` denote the candidate we
+accepted.
+
+```python
+
+def secretary(gen, n):
+    import math
+    explore = int(n / math.e)
+    target = None
+    candidate_found = False
+    i = 0
+    for c in gen:
+        if i <= explore:
+            if target is None or c > target:
+                target = c
+            yield (c, False)
+        else:
+            if c > target and not candidate_found:
+                candidate_found = True
+                yield (c, True)
+            elif i == n-1:
+                yield (c, True)  # we failed, must pick last candidate!
+                return
+            else:
+                yield (c, False)
+        i += 1
+        if i == n:
+            return
+```
+
+Now, to emulate the secretary problem with Samplitude:
+
+```python
+from samplitude import samplitude as s8e
+
+# insert above secretary function
+
+n = 100
+filters = {'secretary': secretary}
+
+solution = s8e('normal(170, 10) | secretary(%d) | list' % n, filters=filters)
+solution = eval(solution)  # Samplitude returns an eval-able string
+cands = map(lambda x: x[0], solution)
+opt = [s[0] for s in solution if s[1]][0]
+# the next line prints in which position the candidate is
+print(1+sorted(cands, reverse=True).index(opt), '/', n)
+```
+
+In about 67% of the cases we can expect to get ~1/100 or ~2/100, whereas in the
+remaining 33% of the cases, we expect somewhere a bit below 50th.
+
+![Secretary selection](https://raw.githubusercontent.com/pgdr/samplitude/master/assets/hist_secretary.png)
