@@ -271,7 +271,7 @@ def _cli(vals):
 
 
 class __samplitude:
-    def __init__(self, seed=None):
+    def __init__(self, seed=None, filters=None):
         if seed is not None:
             self.__random = random.Random(seed)
         else:
@@ -347,6 +347,9 @@ class __samplitude:
         self.jenv.filters['swap'] = _swap
         self.jenv.filters['permutations'] = _permutations
         self.jenv.filters['combinations'] = _combinations
+        if filters:
+            for fname, f in filters.items():
+                self.jenv.filters[fname] = f
 
     def _shuffle(self, dist):
         dist = list(dist)
@@ -363,12 +366,12 @@ def __verify_no_jinja_braces(tmpl):
         raise UserWarning('Do not postfix with "}}".')
     return tmpl
 
-def samplitude(tmpl, seed=None):
+def samplitude(tmpl, seed=None, filters=None):
     tmpl = '{{ %s }}' % __verify_no_jinja_braces(tmpl)
     if not tmpl:
         raise ValueError('Empty template')
 
-    gkw = __samplitude(seed)
+    gkw = __samplitude(seed=seed, filters=filters)
     template = gkw.jenv.from_string(tmpl)
     res = template.render()
     if res is None:
