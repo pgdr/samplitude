@@ -461,18 +461,14 @@ def secretary(gen, n):
         if i == explore:
             break
 
-    def _annotate(c, i, found):
-        if i == n-1 and not found:
-            return (c, True)
-        if c > target and not found:
-            return (c, True)
-        return (c, False)
+    _ok = lambda c, i, found: ((i == n-1 and not found)
+                            or (c > target and not found))
 
-    candidate_found = False
+    have_hired = False
     for c in gen:
-        annotated = _annotate(c, i, candidate_found)
-        candidate_found = candidate_found or annotated[1]
-        yield annotated
+        status = _ok(c, i, have_hired)
+        have_hired = have_hired or status
+        yield c, status
         i += 1
         if i == n:
             return
