@@ -492,7 +492,8 @@ opt = [s[0] for s in solution if s[1]][0]
 print(1+sorted(cands, reverse=True).index(opt), '/', n)
 ```
 
-In about 67% of the cases we can expect to get ~1/100 or ~2/100, whereas in the
-remaining 33% of the cases, we expect somewhere a bit below 50th.
+In about 67% of the cases we can expect to get ~1/100 or ~2/100, whereas the
+remaining 33% of the cases will be uniformly distributed.  Running 100k runs
+with a population of size 1000 reveals the structure.
 
 ![Secretary selection](https://raw.githubusercontent.com/pgdr/samplitude/master/assets/hist_secretary.png)
