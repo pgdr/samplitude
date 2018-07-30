@@ -414,11 +414,11 @@ A fourier transform is offered as a filter `fft`:
 If you use Samplitude programmatically, you can register your own filter by
 sending a dictionary
 
-```
+```python
 {'name1' : filter1,
  'name2' : filter2,
- ...,
- 'namen': filtern,
+ #...,
+ 'namen' : filtern,
 }
 ```
 to the `samplitude` function.
@@ -429,45 +429,50 @@ Suppose you want to emulate the secretary problem ...
 #### Intermezzo: The problem
 For those not familiar, you are a boss, Alice, who wants to hire a new secretary
 Bob.  Suppose you want to hire the tallest Bob of all your candidates, but the
-candidates arrive in a stream, and you only the number of candidates.  For each
-candidate, you have to accept (hire) or reject the candidate.  Once you have
-rejected a candidate, you cannot undo the decision.
+candidates arrive in a stream, and you know only the number of candidates.  For
+each candidate, you have to accept (hire) or reject the candidate.  Once you
+have rejected a candidate, you cannot undo the decision.
 
 The solution to this problem is to look at the first `n/e` (`e~2.71828` being
-the Euler constant), and thereafter accept the first candidate taller than all
-of the `n/e` first candidates.
+the Euler constant) candidates, and thereafter accept the first candidate taller
+than all of the `n/e` first candidates.
 
 #### A Samplitude solution
 
 Let `normal(170, 10)` be the candidate generator, and let `n=100`.  We create a
 filter `secretary` that takes a stream and an integer (`n`) and picks according
-to the solution.  In order to assess the quality of the solution, we want to
-restream the entire population, and annotate the one we choose.  Let `(c,
-False)` denote a candidate we rejected, and `(c, True)` denote the candidate we
-accepted.
+to the solution.  In order to be able to assess the quality of the solution
+later, the filter must forward the entire list of candidates; hence we annotate
+the one we choose with `(c, False)` for a candidate we rejected, and `(c, True)`
+denotes the candidate we accepted.
 
 ```python
-
 def secretary(gen, n):
     import math
     explore = int(n / math.e)
-    target = None
-    candidate_found = False
+    target = -float('inf')
     i = 0
+
+    # explore the first n/e candidates
     for c in gen:
-        if i <= explore:
-            if target is None or c > target:
-                target = c
-            yield (c, False)
-        else:
-            if c > target and not candidate_found:
-                candidate_found = True
-                yield (c, True)
-            elif i == n-1:
-                yield (c, True)  # we failed, must pick last candidate!
-                return
-            else:
-                yield (c, False)
+        target = max(c, target)
+        yield (c, False)
+        i += 1
+        if i == explore:
+            break
+
+    def _annotate(c, i, found):
+        if i == n-1 and not found:
+            return (c, True)
+        if c > target and not found:
+            return (c, True)
+        return (c, False)
+
+    candidate_found = False
+    for c in gen:
+        annotated = _annotate(c, i, candidate_found)
+        candidate_found = candidate_found or annotated[1]
+        yield annotated
         i += 1
         if i == n:
             return
