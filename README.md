@@ -176,8 +176,21 @@ To limit the output, we use `sample(n)`:
 4
 ```
 
-That isn't very helpful on the `range` generator, but is much more helpful on an
-infinite generator, such as the `uniform` generator:
+That isn't very helpful on the `range` generator, which is already finite, but
+is much more helpful on an infinite generator.  The above example is probably
+better written as
+
+```bash
+>>> s8e "count() | sample(5) | cli"
+0
+1
+2
+3
+4
+```
+
+However, much more interesting are the infinite random generators, such as the
+`uniform` generator:
 
 ```bash
 >>> s8e "uniform(0, 5) | sample(5) | cli"

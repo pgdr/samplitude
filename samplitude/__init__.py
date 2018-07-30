@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-__version__ = '0.0.14'
+__version__ = '0.0.15'
 __all__ = ['samplitude']
 
 try:
@@ -28,6 +28,11 @@ def _generator(func):
             yield (func(*args))
 
     return _inner
+
+
+def _count(start=0, step=1):
+    return itertools.count(start=start, step=step)
+
 
 def __listnstrip(gen):
     return list(map(str.strip, gen))
@@ -279,6 +284,8 @@ class __samplitude:
 
         self.jenv = jinja2.Environment()
         self.jenv.globals.update({
+            'count':
+            _count,  # count from 0 to infinity
             'exponential':
             _generator(self.__random.expovariate),  # one param
             'poisson':
