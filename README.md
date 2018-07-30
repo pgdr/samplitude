@@ -216,7 +216,7 @@ is a generator as well and can be placed on either side of `sample`):
 
 ### Selection and modifications
 
-The `samplitude` behavior is equivalent to the `head` program, or from languages
+The `sample` behavior is equivalent to the `head` program, or from languages
 such as Haskell. The `head` alias is supported:
 ```bash
 >>> samplitude "uniform(0, 5) | round(2) | head(5) | cli"
