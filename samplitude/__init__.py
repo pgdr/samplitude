@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 
-__version__ = '0.0.15'
+__version__ = '0.0.16'
 __all__ = ['samplitude']
 
 try:
@@ -183,14 +183,14 @@ def _drop(dist, n):
     return next(dist)
 
 
-def _sort(gen):
+def _sort(gen, reverse=False):
     if isinstance(gen, (int, float, complex)):
         return (gen,)
     if isinstance(gen, dict):
         return ((k, gen[k])
-                for k in sorted(gen.keys()))
+                for k in sorted(gen.keys(), reverse=reverse))
     gen = list(gen)
-    return tuple(sorted(gen))
+    return tuple(sorted(gen, reverse=reverse))
 
 
 def _counter(dist):

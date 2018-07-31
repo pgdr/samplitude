@@ -334,6 +334,15 @@ The `swap` filter does an element-wise reverse, with element-wise reverse
 defined on a dictionary as a list of `(value, key)` for each key-value pair in
 the dictionary.
 
+So, to get the three most common anagram strings, we can run
+```bash
+>>> s8e "words() | map('sort') | counter | swap | sort(reverse=True) |
+         swap | sample(3) | map('first') | elt_join('') | cli"
+aeprs
+acerst
+opst
+```
+
 
 Using `stdin()` as a generator, we can pipe into `samplitude`.  Beware that
 `stdin()` flushes the input, hence `stdin` (currently) does not work with
