@@ -10,26 +10,17 @@ except ImportError as err:
     print('Warning: matplotlib unavailable, plotting disabled')
     plt = None
 
-import random
 import itertools
-import jinja2
-
-from ._samplitude import (sinegenerator, cosinegenerator, tangenerator)
-
-class __set(frozenset):
-    # for nicer repr only
-    def __repr__(self):
-        content = ', '.join(map(str, sorted(self)))
-        return '{%s}' % content
-
-def _generator(func):
-    def _inner(*args):
-        while True:
-            yield (func(*args))
-
-    return _inner
 
 
+from ._samplitude import _Samplitude
+from ._generators import (sinegenerator, cosinegenerator, tangenerator)
+from ._utils import _generator, _set
+
+s8e = _Samplitude()
+
+
+@s8e.generator('count')
 def _count(start=0, step=1):
     return itertools.count(start=start, step=step)
 
@@ -37,6 +28,7 @@ def _count(start=0, step=1):
 def __listnstrip(gen):
     return list(map(str.strip, gen))
 
+@s8e.generator('csv')
 def _csv_generator(fname, col=None, sep=None):
     try:
         import pandas as pd
@@ -53,10 +45,14 @@ def _csv_generator(fname, col=None, sep=None):
         return df[df.columns[col]]
     return df[col]
 
+
+
+@s8e.generator('stdin')
 def _stdin_generator():
     import sys
     return __listnstrip(sys.stdin)
 
+@s8e.generator('words')
 def _words_generator():
     import os
     if os.getenv('DICTIONARY') is not None:
@@ -76,6 +72,7 @@ def _words_generator():
     return []
 
 
+@s8e.filter('fft')
 def _fft(gen):
     import numpy as np
     import scipy.fftpack
@@ -84,12 +81,16 @@ def _fft(gen):
     f = scipy.fftpack.fft(gen)
     return list(f[:N//2])
 
+
+@s8e.filter('dropna')
 def _dropna(gen):
     for x in gen:
         if x != x:
             continue
         yield x
 
+
+@s8e.filter('pairs')
 def _pairwise(gen):
     _sentinel = object()
     prev = _sentinel
@@ -102,16 +103,19 @@ def _pairwise(gen):
     raise StopIteration
 
 
+@s8e.filter('round')
 def _rounder(gen, r=3):
     for x in gen:
         yield (round(x, r))
 
 
+@s8e.filter('int')
 def _inter(gen):
     for x in gen:
         yield (int(x))
 
 
+@s8e.filter('scale')
 def _scale(gen, s=1):
     if isinstance(s, (int, float, complex)):
         for x in gen:
@@ -121,6 +125,7 @@ def _scale(gen, s=1):
             yield x * y
 
 
+@s8e.filter('shift')
 def _shift(gen, s=0):
     if isinstance(s, (int, float, complex)):
         for x in gen:
@@ -131,6 +136,7 @@ def _shift(gen, s=0):
 
 
 
+@s8e.filter('sample')
 def _sample(dist, n):
     for x in dist:
         if n <= 0:
@@ -138,7 +144,7 @@ def _sample(dist, n):
         yield x
         n -= 1
 
-
+@s8e.filter('swap')
 def _swap(gen):
     if isinstance(gen, dict):
         for k in sorted(gen.keys()):
@@ -153,15 +159,18 @@ def _swap(gen):
             elt.reverse()
             yield elt
 
+@s8e.filter('elt_join')
 def _elt_join(gen, sep=' '):
     for x in gen:
         yield sep.join(map(str, x))
 
 
+@s8e.filter('gobble')
 def _gobble(*args, **kwargs):
     return []
 
 
+@s8e.filter('len')
 def _len(gen):
     try:
         return len(gen)
@@ -169,6 +178,7 @@ def _len(gen):
         return len(list(gen))
 
 
+@s8e.filter('drop')
 def _drop(dist, n):
     try:
         for _ in range(n):
@@ -183,6 +193,7 @@ def _drop(dist, n):
     return next(dist)
 
 
+@s8e.filter('sorted')
 def _sort(gen, reverse=False):
     if isinstance(gen, (int, float, complex)):
         return (gen,)
@@ -193,11 +204,13 @@ def _sort(gen, reverse=False):
     return tuple(sorted(gen, reverse=reverse))
 
 
+@s8e.filter('counter')
 def _counter(dist):
     from collections import Counter
     return Counter(dist)
 
 
+@s8e.filter('product')
 def _product(A, B, combiner=None):
     if combiner is None or combiner == 'tuple':
         comb = lambda x,y: tuple((x,y))
@@ -212,7 +225,7 @@ def _product(A, B, combiner=None):
     elif combiner in ('idiv', '//'):
         comb = lambda x,y: x // y
     elif combiner == 'set':
-        comb = lambda x,y: __set((x, y))
+        comb = lambda x,y: _set((x, y))
     elif combiner.startswith('concat'):
         comb = lambda x,y: '{}{}'.format(x, y)
 
@@ -220,18 +233,22 @@ def _product(A, B, combiner=None):
                  for a in A for b in B)
 
 
+
+@s8e.filter('permutations')
 def _permutations(gen, r=None):
     inp = list(gen)
     for perm in itertools.permutations(gen, r=r):
         yield perm
 
 
+@s8e.filter('combinations')
 def _combinations(gen, r):
     inp = list(gen)
     for comb in itertools.combinations(gen, r=r):
         yield comb
 
 
+@s8e.filter('hist')
 def _hist(vals, n_bins=None):
     if plt is None:
         return vals
@@ -247,6 +264,7 @@ def _hist(vals, n_bins=None):
     return vals
 
 
+@s8e.filter('line')
 def _line(vals):
     if plt is None:
         return vals
@@ -256,6 +274,7 @@ def _line(vals):
     return vals
 
 
+@s8e.filter('scatter')
 def _scatter(vals):
     if plt is None:
         return vals
@@ -267,6 +286,7 @@ def _scatter(vals):
     return vals
 
 
+@s8e.filter('cli')
 def _cli(vals):
     if isinstance(vals, dict):
         return '\n'.join(['{} {}'.format(k, vals[k]) for k in vals])
@@ -275,93 +295,6 @@ def _cli(vals):
     return '\n'.join(map(str, vals))
 
 
-class __samplitude:
-    def __init__(self, seed=None, filters=None):
-        if seed is not None:
-            self.__random = random.Random(seed)
-        else:
-            self.__random = random.Random()
-
-        self.jenv = jinja2.Environment()
-        self.jenv.globals.update({
-            'count':
-            _count,  # count from 0 to infinity
-            'exponential':
-            _generator(self.__random.expovariate),  # one param
-            'poisson':
-            _generator(self.__random.expovariate),  # alias
-            'uniform':
-            _generator(self.__random.uniform),
-            'gauss':
-            _generator(self.__random.gauss),
-            'normal':
-            _generator(self.__random.normalvariate),
-            'lognormal':
-            _generator(self.__random.lognormvariate),
-            'triangular':
-            _generator(self.__random.triangular),
-            'beta':
-            _generator(self.__random.betavariate),
-            'gamma':
-            _generator(self.__random.gammavariate),
-            'pareto':
-            _generator(self.__random.paretovariate),
-            'vonmises':
-            _generator(self.__random.vonmisesvariate),
-            'weibull':
-            _generator(self.__random.weibullvariate),
-            # THIS ONE'S SPECIAL
-            'stdin':
-            _stdin_generator,
-            # Pandas
-            'csv':
-            _csv_generator,
-            # Reads (Unix) dictionary file
-            'words':
-            _words_generator,
-            # custom generators
-            'sin':
-            sinegenerator,
-            'cos':
-            cosinegenerator,
-            'tan':
-            tangenerator,
-            'product':
-            _product,
-        })
-        self.jenv.filters['choice'] = _generator(self.__random.choice)
-        self.jenv.filters['sample'] = _sample
-        self.jenv.filters['head'] = _sample  # alias
-        self.jenv.filters['drop'] = _drop
-        self.jenv.filters['gobble'] = _gobble
-        self.jenv.filters['counter'] = _counter
-        self.jenv.filters['pairs'] = _pairwise
-        self.jenv.filters['sort'] = _sort
-        self.jenv.filters['shuffle'] = self._shuffle
-        self.jenv.filters['round'] = _rounder
-        self.jenv.filters['integer'] = _inter
-        self.jenv.filters['shift'] = _shift
-        self.jenv.filters['scale'] = _scale
-        self.jenv.filters['fft'] = _fft
-        self.jenv.filters['dropna'] = _dropna
-        self.jenv.filters['hist'] = _hist
-        self.jenv.filters['line'] = _line
-        self.jenv.filters['plot'] = _line  # alias
-        self.jenv.filters['scatter'] = _scatter
-        self.jenv.filters['cli'] = _cli
-        self.jenv.filters['len'] = _len
-        self.jenv.filters['elt_join'] = _elt_join
-        self.jenv.filters['swap'] = _swap
-        self.jenv.filters['permutations'] = _permutations
-        self.jenv.filters['combinations'] = _combinations
-        if filters:
-            for fname, f in filters.items():
-                self.jenv.filters[fname] = f
-
-    def _shuffle(self, dist):
-        dist = list(dist)
-        self.__random.shuffle(dist)
-        return dist
 
 def __verify_no_jinja_braces(tmpl):
     tmpl = str(tmpl).strip()
@@ -378,8 +311,11 @@ def samplitude(tmpl, seed=None, filters=None):
     if not tmpl:
         raise ValueError('Empty template')
 
-    gkw = __samplitude(seed=seed, filters=filters)
-    template = gkw.jenv.from_string(tmpl)
+    if seed:
+        s8e.set_seed(seed)
+    if filters:
+        s8e.add_filters(filters)
+    template = s8e.jenv.from_string(tmpl)
     res = template.render()
     if res is None:
         return
