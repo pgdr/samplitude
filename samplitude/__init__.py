@@ -206,7 +206,7 @@ def _drop(dist, n):
     return next(dist)
 
 
-@s8e.filter('sorted')
+@s8e.filter('sort')
 def _sort(gen, reverse=False):
     if isinstance(gen, (int, float, complex)):
         return (gen,)

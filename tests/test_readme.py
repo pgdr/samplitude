@@ -24,12 +24,16 @@ class TestReadme(unittest.TestCase):
                        '0.951')
 
     def test_csv_counter(self):
-        return
         self.asserts8e("csv('data/iris.csv', 'virginica') | counter | cli",
                          """\
 0 50
 1 50
 2 50""")
+
+    def test_file_read(self):
+        self.asserts8e("file('data/iris.csv') | sample(1) | cli",
+                       "150,4,setosa,versicolor,virginica")
+
 
     def test_permutations_join(self):
         self.asserts8e("'HT' | permutations | cli",
@@ -100,6 +104,41 @@ T;H""")
 8
 2""")
 
+
+    def test_coinflip(self):
+        self.asserts8e("'HT' | choice | sample(6) | cli",
+                       """\
+T
+T
+H
+H
+T
+H""")
+
+    def test_count_dice_seed42(self):
+        self.seed = 42
+        self.asserts8e("range(1,7) | choice | sample(100) | counter | sort | elt_join | cli",
+                       """\
+1 17
+2 21
+3 12
+4 21
+5 13
+6 16""")
+
+    def test_count_dice_seed42_sort(self):
+        self.seed = 42
+        self.asserts8e("range(1,7) | choice | sample(100) |\
+                        counter | swap | sort | swap | elt_join | cli",
+                       """\
+3 12
+5 13
+6 16
+1 17
+2 21
+4 21""")
+
+
     def test_win_draw_loss(self):
         self.asserts8e("['win', 'draw', 'loss'] | choice | sample(6) | sort | cli",
                        """\
@@ -110,9 +149,6 @@ loss
 loss
 win""")
 
-    def test_file_read(self):
-        self.asserts8e("file('data/iris.csv') | sample(1) | cli",
-                       "150,4,setosa,versicolor,virginica")
 
 if __name__ == '__main__':
     unittest.main()
