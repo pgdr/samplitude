@@ -1,4 +1,4 @@
-# samplitude
+# Samplitude [![Build Status](https://travis-ci.org/pgdr/samplitude.svg?branch=master)](https://travis-ci.org/pgdr/samplitude)
 
 CLI generation and plotting of random variables:
 
@@ -82,6 +82,13 @@ column with either an integer index or a column name:
 1 50
 2 50
 ```
+
+For other files, we have the `file` generator:
+```bash
+>>> s8e "file('iris.csv') | sample(1) | cli"
+150,4,setosa,versicolor,virginica
+```
+
 
 Finally, we have `combinations` and `permutations` that are inherited from
 itertools and behave exactly like those.
@@ -205,11 +212,11 @@ We can round the output in case we don't need as many digits (note that `round`
 is a generator as well and can be placed on either side of `sample`):
 ```bash
 >>> s8e "uniform(0, 5) | round(2) | sample(5) | cli"
-4.58
-4.33
-1.87
-2.09
-4.8
+4.98
+4.42
+2.05
+2.29
+3.34
 ```
 
 
@@ -273,9 +280,9 @@ Jinja2 supports more generic lists, e.g., lists of strings.  Hence, we can write
 >>> s8e "['win', 'draw', 'loss'] | choice | sample(6) | sort | cli"
 draw
 draw
-draw
 loss
-win
+loss
+loss
 win
 ```
 

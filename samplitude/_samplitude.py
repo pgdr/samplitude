@@ -15,7 +15,7 @@ class _Samplitude:
         else:
             self.__random = random.Random(seed)
 
-        self.__add_the_ugly_filters()
+        self.__add_the_ugly_stuff()
 
     def add_filters(self, filters):
         for fname, f in filters.items():
@@ -44,6 +44,32 @@ class _Samplitude:
         self.__random.shuffle(dist)
         return dist
 
-    def __add_the_ugly_filters(self):
+    def __add_the_ugly_stuff(self):
+        self.jenv.globals.update({
+            'exponential':
+            _generator(self.__random.expovariate),  # one param
+            'poisson':
+            _generator(self.__random.expovariate),  # alias
+            'uniform':
+            _generator(self.__random.uniform),
+            'gauss':
+            _generator(self.__random.gauss),
+            'normal':
+            _generator(self.__random.normalvariate),
+            'lognormal':
+            _generator(self.__random.lognormvariate),
+            'triangular':
+            _generator(self.__random.triangular),
+            'beta':
+            _generator(self.__random.betavariate),
+            'gamma':
+            _generator(self.__random.gammavariate),
+            'pareto':
+            _generator(self.__random.paretovariate),
+            'vonmises':
+            _generator(self.__random.vonmisesvariate),
+            'weibull':
+            _generator(self.__random.weibullvariate),
+            })
         self.jenv.filters['choice'] = _generator(self.__random.choice)
         self.jenv.filters['shuffle'] = self._shuffle

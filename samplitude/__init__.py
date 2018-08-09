@@ -75,6 +75,16 @@ def _words_generator():
     return []
 
 
+@s8e.generator('file')
+def _file_generator(fname):
+    import os
+    if not os.path.isfile(fname):
+        raise IOError('No such file {}'.format(fname))
+    with open(fname, 'r') as f:
+        temp = f.read().splitlines()
+    for line in temp:
+        yield line
+
 @s8e.filter('fft')
 def _fft(gen):
     import numpy as np
