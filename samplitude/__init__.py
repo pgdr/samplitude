@@ -109,13 +109,13 @@ def _pairwise(gen):
 @s8e.filter('round')
 def _rounder(gen, r=3):
     for x in gen:
-        yield (round(x, r))
+        yield round(x, r)
 
 
 @s8e.filter('int')
 def _inter(gen):
     for x in gen:
-        yield (int(x))
+        yield int(x)
 
 
 @s8e.filter('scale')

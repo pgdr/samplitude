@@ -55,4 +55,5 @@ setup(
             's8e = samplitude:main',
         ],
     },
+    test_suite='tests',
 )
