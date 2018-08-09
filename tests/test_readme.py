@@ -23,6 +23,17 @@ class TestReadme(unittest.TestCase):
         self.asserts8e("sin(0.31415) | sample(5) | round | max | cli",
                        '0.951')
 
+
+    def test_poisson_scale(self):
+        self.asserts8e("poisson(0.3) | round | shift(15) | sample(5) |cli",
+                       """\
+33.731
+22.204
+16.763
+17.04
+18.668""")
+
+
     def test_csv_counter(self):
         self.asserts8e("csv('data/iris.csv', 'virginica') | counter | cli",
                          """\

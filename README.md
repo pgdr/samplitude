@@ -77,7 +77,7 @@ Pandas and outputs the first column (if nothing else is specified).  Specify the
 column with either an integer index or a column name:
 
 ```bash
->>> s8e "csv('iris.csv', 'virginica') | counter | cli"
+>>> samplitude "csv('iris.csv', 'virginica') | counter | cli"
 0 50
 1 50
 2 50
@@ -94,40 +94,40 @@ Finally, we have `combinations` and `permutations` that are inherited from
 itertools and behave exactly like those.
 
 ```bash
-s8e "'ABC' | permutations | cli"
+>>> s8e "'ABC' | permutations | cli"
 ```
 
 However, the output of this is rather non-UNIXy, with the abstractions leaking through:
 ```bash
-s8e "'HT' | permutations | cli"
+>>> s8e "'HT' | permutations | cli"
 ('H', 'T')
 ('T', 'H')
 ```
 
 So to get a better output, we can use an _elementwise join_ `elt_join`:
 ```bash
-s8e "'HT' | permutations | elt_join | cli"
+>>> s8e "'HT' | permutations | elt_join | cli"
 H T
 T H
 ```
 
 which also takes a seperator as argument:
 ```bash
-samplitude "'HT' | permutations | elt_join(';') | cli"
+>>> s8e "'HT' | permutations | elt_join(';') | cli"
 H;T
 T;H
 ```
 
 This is already supported by Jinja's `map` function (notice the strings around `join`):
 ```bash
-samplitude "'HT' | permutations | map('join', ';') | cli"
+>>> s8e "'HT' | permutations | map('join', ';') | cli"
 H;T
 T;H
 ```
 
 We can thus count the number of permutations of a set of size 10:
 ```bash
-s8e "range(10) | permutations | len"
+>>> s8e "range(10) | permutations | len"
 3628800
 ```
 
@@ -246,7 +246,12 @@ To **shift** and **scale** distributions, we can use the `shift(s)` and
 `scale(s)` filters.  To get a Poisson point process starting at 15, we can run
 
 ```bash
->>> s8e "poisson(0.3) | shift(15)"  # equivalent to exponential(0.3)...
+>>> s8e "poisson(0.3) | round | shift(15) | sample(5) |cli"
+33.731
+22.204
+16.763
+17.04
+18.668
 ```
 
 Both `shift` and `scale` work on generators, so to add `sin(0.1)` and
