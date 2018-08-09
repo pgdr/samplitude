@@ -21,13 +21,19 @@ class _Samplitude:
         for fname, f in filters.items():
             self.jenv.filters[fname] = f
 
-    def generator(self, name):
+    def generator(self, name, func=None):
+        if func is not None:
+            self.jenv.globals.update({name: func})
+            return
         def decorator(func):
             self.jenv.globals.update({name: func})
             return lambda x: x
         return decorator
 
-    def filter(self, name):
+    def filter(self, name, func=None):
+        if func is not None:
+            self.jenv.filters[name] = func
+            return
         def decorator(func):
             self.jenv.filters[name] = func
             return lambda x: x

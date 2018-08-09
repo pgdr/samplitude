@@ -19,6 +19,9 @@ from ._utils import _generator, _set
 
 s8e = _Samplitude()
 
+s8e.generator('sin', sinegenerator)
+s8e.generator('cos', cosinegenerator)
+s8e.generator('tan', tangenerator)
 
 @s8e.generator('count')
 def _count(start=0, step=1):
