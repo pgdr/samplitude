@@ -23,6 +23,34 @@ s8e.generator('sin', sinegenerator)
 s8e.generator('cos', cosinegenerator)
 s8e.generator('tan', tangenerator)
 
+
+
+@s8e.generator('pert')
+def _pert(low, peak, high, g=4.0):
+    ### From github.com/tisimst/mcerp (pypi:mcerp)
+    try:
+        import scipy.stats as ss
+    except ImportError:
+        print('Missing library scipy.stats, `pert` not supported')
+        return
+
+    a, b, c = [float(x) for x in [low, peak, high]]
+    assert a<=b<=c, 'PERT "peak" must be greater than "low" and less than "high"'
+    assert g>=0, 'PERT "g" must be non-negative'
+    mu = (a + g*b + c)/(g + 2)
+    if mu==b:
+        a1 = a2 = 3.0
+    else:
+        a1 = ((mu - a)*(2*b - a - c))/((b - mu)*(c - a))
+        a2 = a1*(c - mu)/(mu - a)
+
+    low = a
+    high = c
+    beta = ss.beta(a1, a2, loc=a, scale=high-low)
+    while True:
+        yield beta.rvs()
+
+
 @s8e.generator('count')
 def _count(start=0, step=1):
     return itertools.count(start=start, step=step)

@@ -58,6 +58,9 @@ In addition to the standard `range` function, we support infinite generators
   than or equal to zero.  If kappa is equal to zero, this distribution reduces
   to a uniform random angle over the range 0 to `2*pi`.
 
+Provided that you have installed the `scipy.stats` package, the
+* `pert(low, peak, high)`
+distribution is supported.
 
 We have a special infinite generator (filter) that works on finite generators:
 
