@@ -19,6 +19,26 @@ class TestReadme(unittest.TestCase):
 0.951
 1.0""")
 
+
+
+    def test_intro_head(self):
+        self.asserts8e("sin(0.31415) | head(6) | round | cli",
+                       """0.0
+0.309
+0.588
+0.809
+0.951
+1.0""")
+
+
+    def test_intro_drop(self):
+        self.asserts8e("sin(0.31415) | drop(2) | head(4) | round | cli",
+                       """0.588
+0.809
+0.951
+1.0""")
+
+
     def test_sin_max(self):
         self.asserts8e("sin(0.31415) | sample(5) | round | max | cli",
                        '0.951')

@@ -185,6 +185,17 @@ def _sample(dist, n):
         yield x
         n -= 1
 
+
+@s8e.filter('head')
+def _(dist, n):  # TODO use _sample
+    for x in dist:
+        if n <= 0:
+            return
+        yield x
+        n -= 1
+
+
+
 @s8e.filter('swap')
 def _swap(gen):
     if isinstance(gen, dict):
@@ -206,6 +217,21 @@ def _elt_join(gen, sep=' '):
         yield sep.join(map(str, x))
 
 
+@s8e.filter('elt_cut')
+def _elt_cut(gen, fields=None, delimiter=None, s=False):
+    if delimiter is None:
+        delimiter = '\t'
+    def _cut(elt):
+        elt = str(elt)
+        if delimiter not in elt:
+            return () if s else (elt,)
+        tokens = elt.split(delimiter)
+        return tokens[fields]
+    for x in gen:
+        yield _cut(x)
+
+
+
 @s8e.filter('gobble')
 def _gobble(*args, **kwargs):
     return []
@@ -221,17 +247,12 @@ def _len(gen):
 
 @s8e.filter('drop')
 def _drop(dist, n):
-    try:
-        for _ in range(n):
-            next(dist)
-
-    except TypeError:
-        return dist[n:]
-
-    except StopIteration:
-        pass
-
-    return next(dist)
+    i = 0
+    for elt in dist:
+        if i < n:
+            i += 1
+            continue
+        yield elt
 
 
 @s8e.filter('sort')
