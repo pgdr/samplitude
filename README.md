@@ -412,6 +412,19 @@ the pipe:
 >>> s8e "normal(100, 5) | sample(1000) | hist | gobble"
 ```
 
+
+The
+[`pert` distribution](https://en.wikipedia.org/wiki/PERT_distribution)
+takes inputs `low`, `peak`, and `high`:
+
+```bash
+>>> s8e "pert(10, 50, 90) | sample(100000) | hist(100) | gobble"
+```
+
+![PERT distribution](https://raw.githubusercontent.com/pgdr/samplitude/master/assets/hist_pert.png)
+
+
+
 Although `hist` is the most useful, one could imaging running `s8e` on
 timeseries, where a `line` plot makes most sense:
 
