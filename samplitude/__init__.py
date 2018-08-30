@@ -156,6 +156,12 @@ def _inter(gen):
         yield int(x)
 
 
+@s8e.filter('zip')
+def _(gen1, gen2):
+    for x,y in itertools.izip(gen1, gen2):
+        yield x,y
+
+
 @s8e.filter('scale')
 def _scale(gen, s=1):
     if isinstance(s, (int, float, complex)):
@@ -311,17 +317,17 @@ def _combinations(gen, r):
 
 
 @s8e.filter('hist')
-def _hist(vals, n_bins=None):
+def _hist(vals, bins=None):
     if plt is None:
         return vals
     vals = list(vals)  # consuming generator
-    if n_bins is None:
+    if bins is None:
         try:
             plt.hist(vals, bins='auto')
         except:
             plt.hist(vals)
     else:
-        plt.hist(vals, bins=n_bins)
+        plt.hist(vals, bins=bins)
     plt.show()
     return vals
 
@@ -344,6 +350,20 @@ def _scatter(vals):
         vals = vals.items()
     x, y = zip(*list(vals))
     plt.scatter(x, y)
+    plt.show()
+    return vals
+
+
+@s8e.filter('heat')
+def _(vals, res=256, color='viridis'):
+    import numpy as np
+    if plt is None:
+        return vals
+    if isinstance(vals, dict):
+        vals = vals.items()
+    x, y = zip(*list(vals))
+    heatmap, _ , _ = np.histogram2d(x,y, bins=res)
+    plt.imshow(heatmap, cmap=color)
     plt.show()
     return vals
 
