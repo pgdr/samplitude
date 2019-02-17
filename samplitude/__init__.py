@@ -25,6 +25,16 @@ s8e.generator('tan', tangenerator)
 
 
 
+
+@s8e.generator('chi2')
+def _chi2(df, loc=0, scale=1):
+    import scipy.stats
+    chi2 = scipy.stats.chi2.rvs
+    df, loc, scale = [float(x) for x in [df, loc, scale]]
+    while True:
+        yield chi2(df=df, loc=loc, scale=scale)
+
+
 @s8e.generator('pert')
 def _pert(low, peak, high, g=4.0):
     ### From github.com/tisimst/mcerp (pypi:mcerp)

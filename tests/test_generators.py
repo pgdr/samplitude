@@ -53,5 +53,10 @@ class TestSamplitudeGenerators(unittest.TestCase):
 1.438""")
 
 
+
+    def test_chi2(self):
+        self.asserts8e('chi2(5) | sample(3) | round | len',
+                       '3')
+
 if __name__ == '__main__':
     unittest.main()
