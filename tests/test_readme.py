@@ -101,11 +101,11 @@ T;H""")
     def test_uniform(self):
         self.asserts8e("uniform(0, 5) | sample(5) | cli",
                        """\
-4.98186188391
-4.42410048265
-2.05399187287
-2.28859745598
-3.33617203154""")
+4.981861883913835
+4.424100482649073
+2.0539918728658444
+2.2885974559805384
+3.336172031543227""")
 
     def test_uniform_round(self):
         self.asserts8e("uniform(0, 5) | round(2) | sample(5) | cli",
@@ -120,45 +120,44 @@ T;H""")
         self.asserts8e("range(0, 11, 2) | choice | sample(6) | cli",
                        """\
 10
-10
-4
-4
+0
+6
 8
+6
 2""")
 
     def test_coin_flip(self):
         self.asserts8e("'HT' | choice | sample(6) | cli",
                        """\
+H
 T
 T
 H
 H
-T
 H""")
 
     def test_count_dice_seed42(self):
-        self.seed = 42
         self.asserts8e("range(1,7) | choice | sample(100) | counter | sort | elt_join | cli",
                        """\
-1 17
-2 21
-3 12
-4 21
-5 13
-6 16""")
+1 20
+2 18
+3 17
+4 11
+5 14
+6 20""",
+                       seed=42)
 
     def test_count_dice_seed42_sort(self):
-        self.seed = 42
         self.asserts8e("range(1,7) | choice | sample(100) |\
                         counter | swap | sort | swap | elt_join | cli",
                        """\
-3 12
-5 13
-6 16
-1 17
-2 21
-4 21""")
-
+4 11
+5 14
+3 17
+2 18
+1 20
+6 20""",
+                       seed=42)
 
     def test_win_draw_loss(self):
         self.asserts8e("['win', 'draw', 'loss'] | choice | sample(6) | sort | cli",
@@ -167,7 +166,7 @@ draw
 draw
 loss
 loss
-loss
+win
 win""")
 
 

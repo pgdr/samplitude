@@ -7,7 +7,7 @@ class TestSamplitudeConsumers(SamplitudeTestCase):
     def test_to_json(self):
         self.asserts8e("'HT' | choice | sample(6) | counter | tojson",
                        """\
-{"H": 3, "T": 3}""")
+{"H": 4, "T": 2}""")
 
     def test_max_min_sum_len(self):
         base = 'range(1, 101) | scale(range(100,0,-1))'
