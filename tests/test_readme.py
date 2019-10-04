@@ -1,7 +1,11 @@
 import unittest
 from tests import SamplitudeTestCase
 
-class TestReadme(unittest.TestCase):
+try:
+    import pandas
+    pandas_is_importable = True
+except ImportError as err:
+    pandas_is_importable = False
 
 
 class TestReadme(SamplitudeTestCase):
@@ -49,7 +53,7 @@ class TestReadme(SamplitudeTestCase):
 17.04
 18.668""")
 
-
+    @unittest.skipIf(not pandas_is_importable, "Unable to import Pandas")
     def test_csv_counter(self):
         self.asserts8e("csv('data/iris.csv', 'virginica') | counter | cli",
                          """\
