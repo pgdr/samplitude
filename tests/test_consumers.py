@@ -1,14 +1,8 @@
 import unittest
-from samplitude import samplitude as s8e
+from tests import SamplitudeTestCase
 
-class TestSamplitudeConsumers(unittest.TestCase):
 
-    def setUp(self):
-        self.seed = 1729
-
-    def asserts8e(self, template, expected):
-        self.assertEqual(str(expected),
-                         str(s8e(template, seed=self.seed)))
+class TestSamplitudeConsumers(SamplitudeTestCase):
 
     def test_tojson(self):
         self.asserts8e("'HT' | choice | sample(6) | counter | tojson",

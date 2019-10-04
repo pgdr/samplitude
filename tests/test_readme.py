@@ -1,14 +1,10 @@
 import unittest
-from samplitude import samplitude as s8e
+from tests import SamplitudeTestCase
 
 class TestReadme(unittest.TestCase):
 
-    def setUp(self):
-        self.seed = 1729
 
-    def asserts8e(self, template, expected):
-        self.assertEqual(str(expected),
-                         str(s8e(template, seed=self.seed)))
+class TestReadme(SamplitudeTestCase):
 
     def test_intro(self):
         self.asserts8e("sin(0.31415) | sample(6) | round | cli",

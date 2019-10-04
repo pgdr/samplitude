@@ -1,7 +1,9 @@
 import unittest
 from samplitude import samplitude as s8e
+from tests import SamplitudeTestCase
 
-class TestSamplitudeFilters(unittest.TestCase):
+
+class TestSamplitudeFilters(SamplitudeTestCase):
 
     def test_round(self):
         self.assertEqual('\n'.join(['0.{}'.format(_) for _ in range(7)]),
