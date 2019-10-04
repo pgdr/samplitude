@@ -44,7 +44,7 @@ class TestReadme(SamplitudeTestCase):
                        """\
 33.731
 22.204
-16.763
+16.762999999999998
 17.04
 18.668""")
 
