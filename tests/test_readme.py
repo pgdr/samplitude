@@ -19,8 +19,6 @@ class TestReadme(SamplitudeTestCase):
 0.951
 1.0""")
 
-
-
     def test_intro_head(self):
         self.asserts8e("sin(0.31415) | head(6) | round | cli",
                        """0.0
@@ -30,7 +28,6 @@ class TestReadme(SamplitudeTestCase):
 0.951
 1.0""")
 
-
     def test_intro_drop(self):
         self.asserts8e("sin(0.31415) | drop(2) | head(4) | round | cli",
                        """0.588
@@ -38,11 +35,9 @@ class TestReadme(SamplitudeTestCase):
 0.951
 1.0""")
 
-
     def test_sin_max(self):
         self.asserts8e("sin(0.31415) | sample(5) | round | max | cli",
                        '0.951')
-
 
     def test_poisson_scale(self):
         self.asserts8e("poisson(0.3) | round | shift(15) | sample(5) |cli",
@@ -65,7 +60,6 @@ class TestReadme(SamplitudeTestCase):
         self.asserts8e("file('data/iris.csv') | sample(1) | cli",
                        "150,4,setosa,versicolor,virginica")
 
-
     def test_permutations_join(self):
         self.asserts8e("'HT' | permutations | cli",
                        """\
@@ -82,8 +76,6 @@ T;H""")
         self.asserts8e("range(10) | permutations | len",
                        '3628800')
 
-
-
     def test_pure_jinja(self):
         self.asserts8e("range(5) | list",
                        '[0, 1, 2, 3, 4]')
@@ -97,7 +89,7 @@ T;H""")
 3
 4""")
 
-    def test_countsamplecli(self):
+    def test_count_sample_cli(self):
         self.asserts8e("count() | sample(5) | cli",
                        """\
 0
@@ -124,7 +116,6 @@ T;H""")
 2.29
 3.34""")
 
-
     def test_even_choice(self):
         self.asserts8e("range(0, 11, 2) | choice | sample(6) | cli",
                        """\
@@ -135,8 +126,7 @@ T;H""")
 8
 2""")
 
-
-    def test_coinflip(self):
+    def test_coin_flip(self):
         self.asserts8e("'HT' | choice | sample(6) | cli",
                        """\
 T

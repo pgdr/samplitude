@@ -4,7 +4,7 @@ from tests import SamplitudeTestCase
 
 class TestSamplitudeConsumers(SamplitudeTestCase):
 
-    def test_tojson(self):
+    def test_to_json(self):
         self.asserts8e("'HT' | choice | sample(6) | counter | tojson",
                        """\
 {"H": 3, "T": 3}""")
@@ -15,7 +15,6 @@ class TestSamplitudeConsumers(SamplitudeTestCase):
         self.asserts8e('%s | min' % base, "100")
         self.asserts8e('%s | sum' % base, "171700")
         self.asserts8e('%s | len' % base, "100")
-
 
     def test_gobbler(self):
         base = 'range(1, 101) | scale(range(100,0,-1))'
