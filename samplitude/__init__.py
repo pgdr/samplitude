@@ -386,24 +386,29 @@ def _cli(vals):
 def __verify_no_jinja_braces(tmpl):
     tmpl = str(tmpl).strip()
     if tmpl.startswith('{{'):
-        tmpl = tmpl[2:]
         raise UserWarning('Do not prefix with "{{".')
     if tmpl.endswith('}}'):
-        tmpl = tmpl[:-2]
         raise UserWarning('Do not postfix with "}}".')
     return tmpl
 
 
 def samplitude(tmpl, seed=None, filters=None):
-    tmpl = '{{ %s }}' % __verify_no_jinja_braces(tmpl)
-    if not tmpl:
+    if tmpl.strip() == '':
         raise ValueError('Empty template')
+
+    tmpl = '{{ %s }}' % __verify_no_jinja_braces(tmpl)
 
     if seed:
         s8e.set_seed(seed)
     if filters:
         s8e.add_filters(filters)
-    template = s8e.jenv.from_string(tmpl)
+
+    from jinja2 import TemplateAssertionError
+    try:
+        template = s8e.jenv.from_string(tmpl)
+    except TemplateAssertionError as e:
+        raise ValueError(e.message) from None
+
     res = template.render()
     if res is None:
         return
