@@ -9,18 +9,24 @@ __source = 'https://github.com/pgdr/samplitude'
 __webpage = __source
 __description = "Samplitude (s8e) is a statistical distributions command line tool"
 
+requirements = {
+  'minimum': ['numpy>=1.11', 'Jinja2'],
+  'csv': ['numpy>=1.11', 'Jinja2', 'pandas'],
+  'sci': ['numpy>=1.11', 'Jinja2', 'scipy'],
+  'csv_sci': ['numpy>=1.11', 'Jinja2', 'pandas', 'scipy'],
+  'plot': ['numpy>=1.11', 'Jinja2', 'matplotlib']
+}
+requirements['complete'] = sorted(set(sum(requirements.values(), [])))
+
 
 def src(x):
     root = os.path.dirname(__file__)
     return os.path.abspath(os.path.join(root, x))
 
+
 def _read_file(fname, op):
     with open(src(fname), 'r') as fin:
         return op(fin.readlines())
-
-
-def requirements():
-    return ['numpy>=1.11', 'Jinja2']
 
 
 def readme():
@@ -48,7 +54,7 @@ setup(
     license='GNU GPL v3 or later',
     keywords='jinja2 jinja random statistics sample distribution plot',
     version='0.0.17',
-    install_requires=requirements(),
+    install_requires=requirements['minimum'],
     entry_points={
         'console_scripts': [
             'samplitude = samplitude:main',
@@ -56,4 +62,5 @@ setup(
         ],
     },
     test_suite='tests',
+    extras_require=requirements
 )
