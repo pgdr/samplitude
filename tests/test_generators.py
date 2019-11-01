@@ -33,6 +33,10 @@ class TestSamplitudeGenerators(SamplitudeTestCase):
         self.asserts8e('chi2(5) | sample(3) | round | len',
                        '3')
 
+    def test_range_head(self):
+        self.asserts8e('range(10) | head | list',
+                       '[0, 1, 2, 3, 4]')
+
 
 if __name__ == '__main__':
     unittest.main()

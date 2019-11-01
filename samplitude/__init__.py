@@ -23,6 +23,29 @@ s8e.generator('cos', cosinegenerator, infinite=True)
 s8e.generator('tan', tangenerator, infinite=True)
 
 
+class _SizedIterator(object):
+    def __init__(self, elements, n):
+        if not hasattr(elements, '__next__'):
+            self._elements = iter(elements)
+        else:
+            self._elements = elements
+        self._n = n
+        self._i = 0
+
+    def __len__(self):
+        return self._n
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self._i == self._n:
+            raise StopIteration
+        v = next(self._elements)
+        self._i += 1
+        return v
+
+
 @s8e.generator('chi2')
 def _chi2(df, loc=0, scale=1):
     try:
@@ -204,20 +227,12 @@ def _shift(gen, s=0):
 
 @s8e.filter('sample', limiter=True)
 def _sample(dist, n):
-    for x in dist:
-        if n <= 0:
-            return
-        yield x
-        n -= 1
+    return _SizedIterator(dist, n)
 
 
 @s8e.filter('head', limiter=True)
-def _(dist, n):  # TODO use _sample
-    for x in dist:
-        if n <= 0:
-            return
-        yield x
-        n -= 1
+def _head(dist, n=5):
+    return _SizedIterator(dist, n)
 
 
 @s8e.filter('swap')
@@ -452,7 +467,8 @@ def samplitude(tmpl, seed=None, filters=None):
     res = template.render()
     if res is None:
         return
-    if res.startswith('<generator object'):
+
+    if res.startswith('<samplitude._SizedIterator'):
         tmpl = tmpl[3:-3].split('|')
         return '"{}"'.format(' | '.join(map(str.strip, tmpl)))
     return res
