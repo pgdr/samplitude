@@ -12,7 +12,6 @@ except ImportError as err:
 
 import itertools
 
-
 from ._samplitude import _Samplitude
 from ._generators import (sinegenerator, cosinegenerator, tangenerator)
 from ._utils import _generator, _set
@@ -22,8 +21,6 @@ s8e = _Samplitude()
 s8e.generator('sin', sinegenerator)
 s8e.generator('cos', cosinegenerator)
 s8e.generator('tan', tangenerator)
-
-
 
 
 @s8e.generator('chi2')
@@ -37,7 +34,7 @@ def _chi2(df, loc=0, scale=1):
 
 @s8e.generator('pert')
 def _pert(low, peak, high, g=4.0):
-    ### From github.com/tisimst/mcerp (pypi:mcerp)
+    # From github.com/tisimst/mcerp (pypi:mcerp)
     try:
         import scipy.stats as ss
     except ImportError:
@@ -45,18 +42,18 @@ def _pert(low, peak, high, g=4.0):
         return
 
     a, b, c = [float(x) for x in [low, peak, high]]
-    assert a<=b<=c, 'PERT "peak" must be greater than "low" and less than "high"'
-    assert g>=0, 'PERT "g" must be non-negative'
-    mu = (a + g*b + c)/(g + 2)
-    if mu==b:
+    assert a <= b <= c, 'PERT "peak" must be greater than "low" and less than "high"'
+    assert g >= 0, 'PERT "g" must be non-negative'
+    mu = (a + g * b + c) / (g + 2)
+    if mu == b:
         a1 = a2 = 3.0
     else:
-        a1 = ((mu - a)*(2*b - a - c))/((b - mu)*(c - a))
-        a2 = a1*(c - mu)/(mu - a)
+        a1 = ((mu - a) * (2 * b - a - c)) / ((b - mu) * (c - a))
+        a2 = a1 * (c - mu) / (mu - a)
 
     low = a
     high = c
-    beta = ss.beta(a1, a2, loc=a, scale=high-low)
+    beta = ss.beta(a1, a2, loc=a, scale=high - low)
     while True:
         yield beta.rvs()
 
@@ -68,6 +65,7 @@ def _count(start=0, step=1):
 
 def __listnstrip(gen):
     return list(map(str.strip, gen))
+
 
 @s8e.generator('csv')
 def _csv_generator(fname, col=None, sep=None):
@@ -87,11 +85,11 @@ def _csv_generator(fname, col=None, sep=None):
     return df[col]
 
 
-
 @s8e.generator('stdin')
 def _stdin_generator():
     import sys
     return __listnstrip(sys.stdin)
+
 
 @s8e.generator('words')
 def _words_generator():
@@ -123,6 +121,7 @@ def _file_generator(fname):
     for line in temp:
         yield line
 
+
 @s8e.filter('fft')
 def _fft(gen):
     import numpy as np
@@ -130,7 +129,7 @@ def _fft(gen):
     gen = np.array(gen)
     N = len(gen)
     f = scipy.fftpack.fft(gen)
-    return list(f[:N//2])
+    return list(f[:N // 2])
 
 
 @s8e.filter('dropna')
@@ -168,8 +167,8 @@ def _inter(gen):
 
 @s8e.filter('zip')
 def _(gen1, gen2):
-    for x,y in itertools.izip(gen1, gen2):
-        yield x,y
+    for x, y in zip(gen1, gen2):
+        yield x, y
 
 
 @s8e.filter('scale')
@@ -192,7 +191,6 @@ def _shift(gen, s=0):
             yield x + y
 
 
-
 @s8e.filter('sample')
 def _sample(dist, n):
     for x in dist:
@@ -211,7 +209,6 @@ def _(dist, n):  # TODO use _sample
         n -= 1
 
 
-
 @s8e.filter('swap')
 def _swap(gen):
     if isinstance(gen, dict):
@@ -227,6 +224,7 @@ def _swap(gen):
             elt.reverse()
             yield elt
 
+
 @s8e.filter('elt_join')
 def _elt_join(gen, sep=' '):
     for x in gen:
@@ -237,15 +235,16 @@ def _elt_join(gen, sep=' '):
 def _elt_cut(gen, fields=None, delimiter=None, s=False):
     if delimiter is None:
         delimiter = '\t'
+
     def _cut(elt):
         elt = str(elt)
         if delimiter not in elt:
             return () if s else (elt,)
         tokens = elt.split(delimiter)
         return tokens[fields]
+
     for x in gen:
         yield _cut(x)
-
 
 
 @s8e.filter('gobble')
@@ -291,37 +290,34 @@ def _counter(dist):
 @s8e.filter('product')
 def _product(A, B, combiner=None):
     if combiner is None or combiner == 'tuple':
-        comb = lambda x,y: tuple((x,y))
+        comb = lambda x, y: tuple((x, y))
     elif combiner in ('add', '+'):
-        comb = lambda x,y: x+y
+        comb = lambda x, y: x + y
     elif combiner in ('minus', 'sub', '-'):
-        comb = lambda x,y: x - y
+        comb = lambda x, y: x - y
     elif combiner in ('mul', '*'):
-        comb = lambda x,y: x * y
+        comb = lambda x, y: x * y
     elif combiner in ('div', '/'):
-        comb = lambda x,y: x / y
+        comb = lambda x, y: x / y
     elif combiner in ('idiv', '//'):
-        comb = lambda x,y: x // y
+        comb = lambda x, y: x // y
     elif combiner == 'set':
-        comb = lambda x,y: _set((x, y))
+        comb = lambda x, y: _set((x, y))
     elif combiner.startswith('concat'):
-        comb = lambda x,y: '{}{}'.format(x, y)
+        comb = lambda x, y: '{}{}'.format(x, y)
 
-    return tuple(comb(a,b)
+    return tuple(comb(a, b)
                  for a in A for b in B)
-
 
 
 @s8e.filter('permutations')
 def _permutations(gen, r=None):
-    inp = list(gen)
     for perm in itertools.permutations(gen, r=r):
         yield perm
 
 
 @s8e.filter('combinations')
 def _combinations(gen, r):
-    inp = list(gen)
     for comb in itertools.combinations(gen, r=r):
         yield comb
 
@@ -372,7 +368,7 @@ def _(vals, res=256, color='viridis'):
     if isinstance(vals, dict):
         vals = vals.items()
     x, y = zip(*list(vals))
-    heatmap, _ , _ = np.histogram2d(x,y, bins=res)
+    heatmap, _, _ = np.histogram2d(x, y, bins=res)
     plt.imshow(heatmap, cmap=color)
     plt.show()
     return vals
@@ -387,27 +383,32 @@ def _cli(vals):
     return '\n'.join(map(str, vals))
 
 
-
 def __verify_no_jinja_braces(tmpl):
     tmpl = str(tmpl).strip()
     if tmpl.startswith('{{'):
-        tmpl = tmpl[2:]
         raise UserWarning('Do not prefix with "{{".')
     if tmpl.endswith('}}'):
-        tmpl = tmpl[:-2]
         raise UserWarning('Do not postfix with "}}".')
     return tmpl
 
+
 def samplitude(tmpl, seed=None, filters=None):
-    tmpl = '{{ %s }}' % __verify_no_jinja_braces(tmpl)
-    if not tmpl:
+    if tmpl.strip() == '':
         raise ValueError('Empty template')
+
+    tmpl = '{{ %s }}' % __verify_no_jinja_braces(tmpl)
 
     if seed:
         s8e.set_seed(seed)
     if filters:
         s8e.add_filters(filters)
-    template = s8e.jenv.from_string(tmpl)
+
+    from jinja2 import TemplateAssertionError
+    try:
+        template = s8e.jenv.from_string(tmpl)
+    except TemplateAssertionError as e:
+        raise ValueError(e.message) from None
+
     res = template.render()
     if res is None:
         return
@@ -415,6 +416,7 @@ def samplitude(tmpl, seed=None, filters=None):
         tmpl = tmpl[3:-3].split('|')
         return '"{}"'.format(' | '.join(map(str.strip, tmpl)))
     return res
+
 
 def _exit_with_usage(argv):
     msg = """\
@@ -446,6 +448,7 @@ def main():
     res = samplitude(template, seed=seed)
     if res:
         print(res)
+
 
 if __name__ == '__main__':
     main()
