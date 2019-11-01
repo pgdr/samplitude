@@ -4,9 +4,10 @@ class _set(frozenset):
         content = ', '.join(map(str, sorted(self)))
         return '{%s}' % content
 
+
 def _generator(func):
     def _inner(*args):
         while True:
             yield (func(*args))
-
+    _inner.is_infinite = True
     return _inner

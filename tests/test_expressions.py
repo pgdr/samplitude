@@ -12,6 +12,14 @@ class TestSamplitudeExpressions(SamplitudeTestCase):
         with self.assertRaises(ValueError):
             self.asserts8e('', '')
 
+    def test_infinite_generator(self):
+        with self.assertRaises(ValueError):
+            self.asserts8e('poisson(0.3) | round', '')
+
+    def test_2nd_infinite_generator(self):
+        with self.assertRaises(ValueError):
+            self.asserts8e("poisson(0.3) | sample(2) | list | choice", '')
+
 
 if __name__ == '__main__':
     unittest.main()

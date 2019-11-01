@@ -18,9 +18,9 @@ from ._utils import _generator, _set
 
 s8e = _Samplitude()
 
-s8e.generator('sin', sinegenerator)
-s8e.generator('cos', cosinegenerator)
-s8e.generator('tan', tangenerator)
+s8e.generator('sin', sinegenerator, infinite=True)
+s8e.generator('cos', cosinegenerator, infinite=True)
+s8e.generator('tan', tangenerator, infinite=True)
 
 
 @s8e.generator('chi2')
@@ -63,7 +63,7 @@ def _pert(low, peak, high, g=4.0):
         yield beta.rvs()
 
 
-@s8e.generator('count')
+@s8e.generator('count', infinite=True)
 def _count(start=0, step=1):
     return itertools.count(start=start, step=step)
 
@@ -202,7 +202,7 @@ def _shift(gen, s=0):
             yield x + y
 
 
-@s8e.filter('sample')
+@s8e.filter('sample', limiter=True)
 def _sample(dist, n):
     for x in dist:
         if n <= 0:
@@ -211,7 +211,7 @@ def _sample(dist, n):
         n -= 1
 
 
-@s8e.filter('head')
+@s8e.filter('head', limiter=True)
 def _(dist, n):  # TODO use _sample
     for x in dist:
         if n <= 0:
@@ -403,6 +403,37 @@ def __verify_no_jinja_braces(tmpl):
     return tmpl
 
 
+def _check_for_infinite_generators(template):
+    ast = s8e.jenv.parse(template)
+    has_infinite_generator = False
+    has_limiter = False
+
+    node = ast.body[0].nodes[0]
+    #  The AST provide nodes back to front. If an infinite generator
+    #  is found before a limiter, the expression will never complete.
+    while node is not None:
+        if hasattr(node, 'name'):
+            if node.name in ast.environment.filters:
+                filter = ast.environment.filters[node.name]
+            elif node.name in ast.environment.globals:
+                filter = ast.environment.globals[node.name]
+            else:
+                raise ValueError("no filter named '%s'" % node.name)
+
+            if hasattr(filter, 'is_infinite') and filter.is_infinite:
+                has_infinite_generator = True
+            if hasattr(filter, 'is_limiter') and filter.is_limiter:
+                if has_infinite_generator:
+                    break
+                else:
+                    has_limiter = True
+
+        node = node.node if hasattr(node, 'node') else None
+
+    if has_infinite_generator and not has_limiter:
+        raise ValueError('the expression has an infinite generator')
+
+
 def samplitude(tmpl, seed=None, filters=None):
     if tmpl.strip() == '':
         raise ValueError('Empty template')
@@ -414,11 +445,9 @@ def samplitude(tmpl, seed=None, filters=None):
     if filters:
         s8e.add_filters(filters)
 
-    from jinja2 import TemplateAssertionError
-    try:
-        template = s8e.jenv.from_string(tmpl)
-    except TemplateAssertionError as e:
-        raise ValueError(e.message) from None
+    _check_for_infinite_generators(tmpl)
+
+    template = s8e.jenv.from_string(tmpl)
 
     res = template.render()
     if res is None:

@@ -3,6 +3,7 @@ import jinja2
 
 from ._utils import _generator
 
+
 class _Samplitude:
     def __init__(self, seed=None, filters=None):
         self.__random = None
@@ -21,20 +22,26 @@ class _Samplitude:
         for fname, f in filters.items():
             self.jenv.filters[fname] = f
 
-    def generator(self, name, func=None):
+    def generator(self, name, func=None, infinite=False):
         if func is not None:
+            func.is_infinite = infinite
             self.jenv.globals.update({name: func})
             return
+
         def decorator(func):
+            func.is_infinite = infinite
             self.jenv.globals.update({name: func})
             return lambda x: x
         return decorator
 
-    def filter(self, name, func=None):
+    def filter(self, name, func=None, limiter=False):
         if func is not None:
+            func.is_limiter = limiter
             self.jenv.filters[name] = func
             return
+
         def decorator(func):
+            func.is_limiter = limiter
             self.jenv.filters[name] = func
             return lambda x: x
         return decorator
