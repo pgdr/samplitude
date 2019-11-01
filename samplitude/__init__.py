@@ -409,6 +409,8 @@ def _check_for_infinite_generators(template):
     has_limiter = False
 
     node = ast.body[0].nodes[0]
+    #  The AST provide nodes back to front. If an infinite generator
+    #  is found before a limiter, the expression will never complete.
     while node is not None:
         if hasattr(node, 'name'):
             if node.name in ast.environment.filters:
@@ -421,7 +423,10 @@ def _check_for_infinite_generators(template):
             if hasattr(filter, 'is_infinite') and filter.is_infinite:
                 has_infinite_generator = True
             if hasattr(filter, 'is_limiter') and filter.is_limiter:
-                has_limiter = True
+                if has_infinite_generator:
+                    break
+                else:
+                    has_limiter = True
 
         node = node.node if hasattr(node, 'node') else None
 
