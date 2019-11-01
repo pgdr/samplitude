@@ -25,7 +25,12 @@ s8e.generator('tan', tangenerator)
 
 @s8e.generator('chi2')
 def _chi2(df, loc=0, scale=1):
-    import scipy.stats
+    try:
+        import scipy.stats
+    except ImportError:
+        print('Missing library scipy.stats, `chi2` not supported')
+        return
+
     chi2 = scipy.stats.chi2.rvs
     df, loc, scale = [float(x) for x in [df, loc, scale]]
     while True:
@@ -125,7 +130,13 @@ def _file_generator(fname):
 @s8e.filter('fft')
 def _fft(gen):
     import numpy as np
-    import scipy.fftpack
+
+    try:
+        import scipy.fftpack
+    except ImportError:
+        print('Missing library scipy.fftpack, `fft` not supported')
+        return
+
     gen = np.array(gen)
     N = len(gen)
     f = scipy.fftpack.fft(gen)
