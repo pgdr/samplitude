@@ -1,8 +1,7 @@
 language: python
 
 install:
-  - pip install -r requirements.txt
-  - pip install pandas
+  - pip install ".[csv_sci]"
 
 script:
   - python setup.py test
