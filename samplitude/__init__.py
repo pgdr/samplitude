@@ -32,6 +32,9 @@ class _SizedIterator(object):
         self._n = n
         self._i = 0
 
+    def toJSON(self):
+        return list(self)
+
     def __len__(self):
         return self._n
 
@@ -407,6 +410,23 @@ def _cli(vals):
     elif isinstance(vals, (int, float, complex)):
         vals = [vals]
     return '\n'.join(map(str, vals))
+
+
+@s8e.filter('json')
+def _json(vals):
+    import json
+    finite = lambda x : hasattr(vals, 'finite') or not hasattr(vals, 'is_infinite')
+
+    if isinstance(vals, _SizedIterator):
+        return json.dumps(vals.toJSON())
+
+    if hasattr(vals, '__next__'):
+        if finite(vals):
+            return json.dumps(list(vals))
+        else:
+            return '<infinite generator>'
+
+    return json.dumps(vals)
 
 
 def __verify_no_jinja_braces(tmpl):

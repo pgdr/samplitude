@@ -25,9 +25,7 @@ class TestSamplitudeExpressions(SamplitudeTestCase):
             self.asserts8e("poisson(0.3) | sample(2) | choice", '')
 
     def test_to_json_of_sized_iterator(self):
-        #  TODO: Add support for custom JSON Encoder?
-        with self.assertRaises(TypeError):
-            self.asserts8e('"ABC"| choice | sample(5) | tojson', '')
+        self.asserts8e('"ABC"| choice | sample(5) | json', '["C", "A", "B", "C", "B"]')
 
 
 if __name__ == '__main__':

@@ -5,7 +5,7 @@ from tests import SamplitudeTestCase
 class TestSamplitudeConsumers(SamplitudeTestCase):
 
     def test_to_json(self):
-        self.asserts8e("'HT' | choice | sample(6) | counter | tojson",
+        self.asserts8e("'HT' | choice | sample(6) | counter | json",
                        """\
 {"H": 4, "T": 2}""")
 

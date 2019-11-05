@@ -23,7 +23,7 @@ and some filters can turn finite generators into infinite generators, such as
 `choice`.
 
 _Consumers_ are filters that necessarily flush the input; `list`, `cli`,
-`tojson`, `unique`, and the plotting tools, `hist`, `scatter` and `line` are
+`json`, `unique`, and the plotting tools, `hist`, `scatter` and `line` are
 examples of consumers.  The `list` consumer is a Jinja2 built-in, and other
 Jinja2 consumers are `sum`, `min`, and `max`:
 

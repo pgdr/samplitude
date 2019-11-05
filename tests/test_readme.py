@@ -159,6 +159,12 @@ H""")
 6 20""",
                        seed=42)
 
+    def test_count_dice_seed42_json(self):
+        self.asserts8e("range(1,7) | choice | sample(100) |\
+                        counter | swap | sort | swap | elt_join | json",
+                       '["4 11", "5 14", "3 17", "2 18", "1 20", "6 20"]',
+                       seed=42)
+
     def test_win_draw_loss(self):
         self.asserts8e("['win', 'draw', 'loss'] | choice | sample(6) | sort | cli",
                        """\
