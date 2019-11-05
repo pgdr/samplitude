@@ -1,4 +1,4 @@
-# Samplitude [![Build Status](https://travis-ci.org/pgdr/samplitude.svg?branch=master)](https://travis-ci.org/pgdr/samplitude)
+# Samplitude [![Build Status](https://travis-ci.com/pgdr/samplitude.svg?branch=master)](https://travis-ci.com/pgdr/samplitude)
 
 CLI generation and plotting of random variables:
 
