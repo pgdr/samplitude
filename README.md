@@ -246,16 +246,30 @@ such as Haskell. The `head` alias is supported:
 ```
 
 To **shift** and **scale** distributions, we can use the `shift(s)` and
-`scale(s)` filters.  To get a Poisson point process starting at 15, we can run
+`scale(s)` filters.
+To get a Poisson distribution process starting at 15, we can run
 
 ```bash
->>> s8e "poisson(0.3) | round | shift(15) | sample(5) |cli"
-33.731
-22.204
-16.763
-17.04
-18.668
+>>> s8e "poisson(4) | shift(15) | sample(5) |cli"
+18
+21
+19
+22
+17
 ```
+
+or to get the Poisson point process (exponential distribution),
+
+```bash
+>>> s8e "exponential(4) | round | shift(15) | sample(5) |cli"
+16.405
+15.54
+15.132
+15.153
+15.275
+```
+
+
 
 Both `shift` and `scale` work on generators, so to add `sin(0.1)` and
 `sin(0.2)`, we can run

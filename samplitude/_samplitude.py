@@ -1,4 +1,6 @@
 import random
+
+import numpy as np
 import jinja2
 
 from ._utils import _generator
@@ -15,6 +17,7 @@ class _Samplitude:
             self.__random = random.Random()
         else:
             self.__random = random.Random(seed)
+            np.random.seed(seed)
 
         self.__add_the_ugly_stuff()
 
@@ -55,8 +58,6 @@ class _Samplitude:
         self.jenv.globals.update({
             'exponential':
             _generator(self.__random.expovariate),  # one param
-            'poisson':
-            _generator(self.__random.expovariate),  # alias
             'uniform':
             _generator(self.__random.uniform),
             'gauss':
@@ -77,6 +78,8 @@ class _Samplitude:
             _generator(self.__random.vonmisesvariate),
             'weibull':
             _generator(self.__random.weibullvariate),
+            "poisson":
+            _generator(np.random.poisson),
             })
         self.jenv.filters['choice'] = _generator(self.__random.choice)
         self.jenv.filters['shuffle'] = self._shuffle

@@ -40,13 +40,22 @@ class TestReadme(SamplitudeTestCase):
                        '0.951')
 
     def test_poisson_scale(self):
-        self.asserts8e("poisson(0.3) | round | shift(15) | sample(5) |cli",
+        self.asserts8e("poisson(4) | shift(15) | sample(5) |cli",
                        """\
-33.731
-22.204
-16.762999999999998
-17.04
-18.668""")
+18
+21
+19
+22
+17""")
+
+    def test_exponential_scale(self):
+        self.asserts8e("exponential(4) | round | shift(15) | sample(5) |cli", """\
+16.405
+15.54
+15.132
+15.153
+15.275""")
+
 
     @unittest.skipIf(not pandas_is_importable, "Unable to import Pandas")
     def test_csv_counter(self):

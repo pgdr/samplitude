@@ -26,8 +26,10 @@ class TestSamplitudeGenerators(SamplitudeTestCase):
     def test_exponential(self):
         self.asserts8e('exponential(1/2.71828) | round | sample(3) | list',
                        '[15.274, 5.875, 1.438]')
-        self.asserts8e('poisson(1/2.71828) | round | sample(3) | list',
-                       '[15.274, 5.875, 1.438]')
+
+    def test_poisson(self):
+        self.asserts8e('poisson(3) | sample(8) | list',
+                       '[2, 4, 2, 3, 6, 2, 1, 3]')
 
     def test_chi2(self):
         self.asserts8e('chi2(5) | sample(3) | round | len',
